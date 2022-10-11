@@ -1,13 +1,28 @@
 package fr.marc.paymybuddy.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
+@DynamicUpdate
 @Table(name = "user")
 public class User {
 
@@ -24,93 +39,24 @@ public class User {
 
 	@Column(name = "lastName")
 	private String lastName;
-	
+
 	@Column(name = "password")
 	private String password;
-	
-	@Column(name = "rememberMe")
+
+	@Column(name = "remember_me")
 	private boolean rememberMe;
-	
+
 	@Column(name = "iban")
 	private String iban;
-	
+
 	@Column(name = "bank")
 	private String bank;
-	
-	@Column(name = "balance")
-	private int balance;
 
-	
-	public int getId() {
-		return id;
-	}
+	@OneToMany(
+			cascade = CascadeType.ALL,
+			orphanRemoval = true,
+			fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id")
+	List<Transaction> transactions = new ArrayList<>();
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getFirsName() {
-		return firsName;
-	}
-
-	public void setFirsName(String firsName) {
-		this.firsName = firsName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public boolean isRememberMe() {
-		return rememberMe;
-	}
-
-	public void setRememberMe(boolean rememberMe) {
-		this.rememberMe = rememberMe;
-	}
-
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(String iban) {
-		this.iban = iban;
-	}
-
-	public String getBank() {
-		return bank;
-	}
-
-	public void setBank(String bank) {
-		this.bank = bank;
-	}
-
-	public int getBalance() {
-		return balance;
-	}
-
-	public void setBalance(int balance) {
-		this.balance = balance;
-	}
-	
 }
