@@ -2,11 +2,14 @@ package fr.marc.paymybuddy.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,8 +29,6 @@ public class Transaction {
 	@Column(name = "id")
 	private int id;
 	
-	// user_id (FK)
-
 	@Column(name = "transaction_number")
 	private int transactionNumber;
 
@@ -43,5 +44,12 @@ public class Transaction {
 	@Column(name = "done")
 	private boolean done;
 
+	// user_id (FK)
+	/*
+	@ManyToOne(
+			cascade = CascadeType.ALL)
+	@JoinColumn(name="user_id")
+	private User user;
+	*/
 
 }

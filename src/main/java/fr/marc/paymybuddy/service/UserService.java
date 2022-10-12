@@ -26,11 +26,10 @@ public class UserService {
 	public Optional<User> getUserById(Integer id) {
 		return userRepository.findById(id);
 	}
-	
-	public User addUser(User user) {
-		return userRepository.save(user);
-	}
-	
+
+	/*
+	 * The balance is calculated as the sum of all transaction amounts for a user.
+	 */
 	public int getBalance(Integer id) {
 		List<Transaction> transactions = new ArrayList<>();
 		transactions = userRepository.findById(id).get().getTransactions();
@@ -39,5 +38,17 @@ public class UserService {
 		return sum;
 	}
 	
+	public List<Transaction> getActivity(Integer id) {
+		return userRepository.findById(id).get().getTransactions();
+	}
+	
+	
+	public User addUser(User user) {
+		return userRepository.save(user);
+	}
+	
+	public void deleteUser(Integer id) {
+		userRepository.deleteById(id);
+	}
 
 }

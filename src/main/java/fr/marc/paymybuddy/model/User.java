@@ -59,4 +59,20 @@ public class User {
 	@JoinColumn(name = "user_id")
 	List<Transaction> transactions = new ArrayList<>();
 
+	/*
+	@OneToMany(
+			mappedBy = "user",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	List<Transaction> transactions = new ArrayList<>();
+	*/
+	
+	/*
+	@OneToMany(
+			cascade = CascadeType.ALL,
+			orphanRemoval = true,
+			fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_id")
+	List<Connection> connections = new ArrayList<>();
+	*/
 }
