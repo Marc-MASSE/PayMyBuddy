@@ -42,6 +42,12 @@ public class UserController {
 		log.info("GET request - endpoint /user - id = "+id);
         return userService.getUserById(id);
     }
+    
+    @GetMapping("/login")
+    public Optional<User> getUserByEmail(@RequestParam String email) {
+		log.info("GET request - endpoint /login - email = "+email);
+        return userService.getUserByEmail(email);
+    }
 	
     @GetMapping("/balance")
     public int getBalanceById(@RequestParam int id) {
