@@ -1,5 +1,7 @@
 package fr.marc.paymybuddy.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,12 +22,15 @@ import lombok.Setter;
 @Entity
 @DynamicUpdate
 @Table(name = "transaction")
-public class Connection {
+public class Connection implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
+	
+	@Column(name = "buddy_id")
+	private int buddyId;
 	
 	// user_id (FK)
 	@ManyToOne (
@@ -36,6 +41,7 @@ public class Connection {
 			nullable = false)
 	private User user;
 	
+	/*
 	// buddy_id (FK)
 	@ManyToOne (
 			fetch =FetchType.LAZY,
@@ -44,5 +50,6 @@ public class Connection {
 			name = "buddy_id",
 			nullable = false)
 	private User buddy;
+	*/
 
 }

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.marc.paymybuddy.controller.UserController;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
@@ -16,6 +19,8 @@ import fr.marc.paymybuddy.repository.UserRepository;
 
 @Service
 public class UserService {
+	
+	static Logger log = LogManager.getLogger(UserService.class.getName());
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -56,12 +61,12 @@ public class UserService {
 		User user = userRepository.findById(id).get();
 		return transactionRepository.findAllByUser(user);
 		}
-	
-	public List<Connection> getBuddies(Integer user_id) {
-		User user = userRepository.findById(user_id).get();
+
+	public List<Connection> getBuddies(Integer userId) {
+		User user = userRepository.findById(userId).get();
+		log.error("getBuddies method for - user = "+user.getFirsName()+" "+user.getLastName());
 		return connectionRepository.findAllByUser(user);
 		}
-	
 	
 	public User addUser(User user) {
 		return userRepository.save(user);
