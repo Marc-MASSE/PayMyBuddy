@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import fr.marc.paymybuddy.model.Transaction;
+import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.User;
 
 @Repository
-public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
+public interface ConnectionRepository extends CrudRepository<Connection, Integer> {
 	
-	public List<Transaction> findAllByUser(User user);
+	public List<Connection> findAllByUser(User user);
 
 }

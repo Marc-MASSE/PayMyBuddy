@@ -7,8 +7,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
+import fr.marc.paymybuddy.repository.ConnectionRepository;
+import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
 
 @Service
@@ -16,6 +19,13 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
+	
+	@Autowired
+	private ConnectionRepository connectionRepository;
+	
 	
 	private int sum;
 	
@@ -32,19 +42,25 @@ public class UserService {
 	}
 
 	/*
-	 * The balance is calculated as the sum of all transaction amounts for a user.
+	 * The balance is calculated as the sum of all transactions amounts for a user.
 	 */
 	public int getBalance(Integer id) {
 		List<Transaction> transactions = new ArrayList<>();
-		transactions = userRepository.findById(id).get().getTransactions();
+		transactions = transactionRepository.findAllByUser(userRepository.findById(id).get());
 		sum = 0;
 		transactions.forEach(t -> sum += t.getAmount());
 		return sum;
 	}
 	
 	public List<Transaction> getActivity(Integer id) {
-		return userRepository.findById(id).get().getTransactions();
-	}
+		User user = userRepository.findById(id).get();
+		return transactionRepository.findAllByUser(user);
+		}
+	
+	public List<Connection> getBuddies(Integer user_id) {
+		User user = userRepository.findById(user_id).get();
+		return connectionRepository.findAllByUser(user);
+		}
 	
 	
 	public User addUser(User user) {

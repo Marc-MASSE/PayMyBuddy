@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.service.UserService;
@@ -49,6 +50,7 @@ public class UserController {
         return userService.getUserByEmail(email);
     }
 	
+    
     @GetMapping("/balance")
     public int getBalanceById(@RequestParam int id) {
 		log.info("GET request - endpoint /balance - id = "+id);
@@ -59,6 +61,12 @@ public class UserController {
     public List<Transaction> getActivityById(@RequestParam int id) {
 		log.info("GET request - endpoint /activity - id = "+id);
         return userService.getActivity(id);
+    }
+    
+    @GetMapping("/buddies")
+    public List<Connection> getBuddiesById(@RequestParam int user_id) {
+		log.info("GET request - endpoint /buddies - user_id = "+user_id);
+        return userService.getBuddies(user_id);
     }
     
     @PostMapping(value = "/user")
