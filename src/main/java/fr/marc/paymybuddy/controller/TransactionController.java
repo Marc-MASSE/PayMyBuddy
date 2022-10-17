@@ -1,5 +1,6 @@
 package fr.marc.paymybuddy.controller;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,11 +47,30 @@ public class TransactionController {
     }
     
     @PostMapping(value = "/transaction")
-    public Transaction addTransaction (@RequestBody Transaction transaction) {
+    public Transaction addTransaction (@RequestParam int user_id, @RequestBody Transaction transaction) {
 		log.info("POST request - endpoint /transaction - body = "+transaction);
-		User user = userService.getUserById(1).get();
+		User user = userService.getUserById(user_id).get();
 		transaction.setUser(user);
     	return transactionService.addTransaction(transaction);
     }
 
+    @PostMapping(value = "/sendmoney")
+    public Transaction sendMoney (@RequestParam int user_id, @RequestParam int buddy_id, @RequestBody Transaction transaction) {
+		log.info("POST request - endpoint /sendmoney - from "+user_id+" to "+buddy_id+" body = "+transaction);
+		/*
+		LocalDate now = LocalDate.now(); 
+	
+		User buddy = userService.getUserById(buddy_id).get();
+		Transaction userTransaction = new Transaction();
+		userTransaction.setUser(buddy);
+		userTransaction.setDate(now);
+		userTransaction.set
+		*/
+		
+		User user = userService.getUserById(user_id).get();
+		
+		transaction.setUser(user);
+    	return transactionService.addTransaction(transaction);
+    }
+    
 }

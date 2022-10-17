@@ -48,7 +48,7 @@ public class Transaction implements Serializable {
 
 	// user_id (FK)
 	@ManyToOne (
-			fetch =FetchType.LAZY,
+			fetch =FetchType.EAGER,
 			optional = false)
 	@JoinColumn(
 			name = "user_id",
