@@ -62,9 +62,9 @@ public class UserService {
 		return transactionRepository.findAllByUser(user);
 		}
 
-	public List<Connection> getBuddies(Integer userId) {
-		User user = userRepository.findById(userId).get();
-		log.error("getBuddies method for - user = "+user.getFirsName()+" "+user.getLastName());
+	public List<Connection> getBuddies(Integer user_id) {
+		User user = userRepository.findById(user_id).get();
+		log.info("getBuddies method for - user = "+user.getFirsName()+" "+user.getLastName());
 		return connectionRepository.findAllByUser(user);
 		}
 	

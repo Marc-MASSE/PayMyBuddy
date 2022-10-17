@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @DynamicUpdate
-@Table(name = "transaction")
+@Table(name = "connection")
 public class Connection implements Serializable {
 	
 	@Id
@@ -30,7 +30,7 @@ public class Connection implements Serializable {
 	private int id;
 	
 	@Column(name = "buddy_id")
-	private int buddyId;
+	private int buddy_id;
 	
 	// user_id (FK)
 	@ManyToOne (

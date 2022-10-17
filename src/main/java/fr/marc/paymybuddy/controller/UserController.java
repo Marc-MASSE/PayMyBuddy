@@ -64,9 +64,9 @@ public class UserController {
     }
     
     @GetMapping("/buddies")
-    public List<Connection> getBuddiesById(@RequestParam int userId) {
-		log.info("GET request - endpoint /buddies - user_id = "+userId);
-        return userService.getBuddies(userId);
+    public List<Connection> getBuddiesById(@RequestParam int user_id) {
+		log.info("GET request - endpoint /buddies - user_id = "+user_id);
+        return userService.getBuddies(user_id);
     }
     
     @PostMapping(value = "/user")
