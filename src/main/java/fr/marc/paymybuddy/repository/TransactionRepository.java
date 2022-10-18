@@ -12,5 +12,9 @@ import fr.marc.paymybuddy.model.User;
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 	
 	public List<Transaction> findAllByUser(User user);
+	
+	public Transaction findFirstByOrderByTransactionNumberDesc();
+	
+	public List<Transaction> findAllByTransactionNumber(Integer transaction_number);
 
 }

@@ -1,6 +1,5 @@
 package fr.marc.paymybuddy.model;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,7 @@ import lombok.Setter;
 @Entity
 @DynamicUpdate
 @Table(name = "user")
-public class User implements Serializable {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,16 +7,12 @@ import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.repository.TransactionRepository;
-import fr.marc.paymybuddy.repository.UserRepository;
 
 @Service
 public class TransactionService {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
-	
-	@Autowired
-	private UserRepository userRepository;
 	
 	
 	public Iterable<Transaction> getTransactions(){
@@ -29,6 +25,10 @@ public class TransactionService {
 	
 	public Transaction addTransaction(Transaction transaction) {
 		return transactionRepository.save(transaction);
+	}
+	
+	public int getNextTransactionNumber() {
+		return transactionRepository.findFirstByOrderByTransactionNumberDesc().getTransactionNumber()+1;
 	}
 
 }

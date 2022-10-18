@@ -1,7 +1,5 @@
 package fr.marc.paymybuddy.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,7 +20,7 @@ import lombok.Setter;
 @Entity
 @DynamicUpdate
 @Table(name = "connection")
-public class Connection implements Serializable {
+public class Connection {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +32,7 @@ public class Connection implements Serializable {
 	
 	// user_id (FK)
 	@ManyToOne (
-			fetch =FetchType.LAZY,
+			fetch =FetchType.EAGER,
 			optional = false)
 	@JoinColumn(
 			name = "user_id",

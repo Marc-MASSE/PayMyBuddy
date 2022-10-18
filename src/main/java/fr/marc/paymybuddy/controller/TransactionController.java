@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.marc.paymybuddy.DTO.SendMoneyDTO;
+import fr.marc.paymybuddy.DTO.TransactionDTO;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.service.TransactionService;
@@ -55,22 +57,27 @@ public class TransactionController {
     }
 
     @PostMapping(value = "/sendmoney")
-    public Transaction sendMoney (@RequestParam int user_id, @RequestParam int buddy_id, @RequestBody Transaction transaction) {
-		log.info("POST request - endpoint /sendmoney - from "+user_id+" to "+buddy_id+" body = "+transaction);
-		/*
-		LocalDate now = LocalDate.now(); 
-	
-		User buddy = userService.getUserById(buddy_id).get();
+    public Transaction sendMoney (@RequestBody SendMoneyDTO sendMoneyDTO) {
+		log.info("POST request - endpoint /sendmoney - from "+sendMoneyDTO.getUser_id()+" to "+sendMoneyDTO.getBuddy_id()+" pay = "+sendMoneyDTO.getAmount());
+		
 		Transaction userTransaction = new Transaction();
-		userTransaction.setUser(buddy);
-		userTransaction.setDate(now);
-		userTransaction.set
-		*/
+		userTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		userTransaction.setDescription(sendMoneyDTO.getDescription());
+		userTransaction.setAmount(-sendMoneyDTO.getAmount());
+		userTransaction.setDate(LocalDate.now());
+		userTransaction.setUser(userService.getUserById(sendMoneyDTO.getUser_id()).get());
 		
-		User user = userService.getUserById(user_id).get();
+		Transaction buddyTransaction = new Transaction();
+		buddyTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		buddyTransaction.setDescription(sendMoneyDTO.getDescription());
+		buddyTransaction.setAmount(sendMoneyDTO.getAmount());
+		buddyTransaction.setDate(LocalDate.now());
+		buddyTransaction.setUser(userService.getUserById(sendMoneyDTO.getBuddy_id()).get());
 		
-		transaction.setUser(user);
-    	return transactionService.addTransaction(transaction);
+		transactionService.addTransaction(userTransaction);
+		transactionService.addTransaction(buddyTransaction);
+		
+    	return userTransaction;
     }
     
 }
