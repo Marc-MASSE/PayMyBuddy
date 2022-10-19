@@ -62,6 +62,7 @@ public class TransactionController {
 		
 		Transaction userTransaction = new Transaction();
 		userTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		userTransaction.setBuddy_id(sendMoneyDTO.getBuddy_id());
 		userTransaction.setDescription(sendMoneyDTO.getDescription());
 		userTransaction.setAmount(-sendMoneyDTO.getAmount());
 		userTransaction.setDate(LocalDate.now());
@@ -69,6 +70,7 @@ public class TransactionController {
 		
 		Transaction buddyTransaction = new Transaction();
 		buddyTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		buddyTransaction.setBuddy_id(sendMoneyDTO.getUser_id());
 		buddyTransaction.setDescription(sendMoneyDTO.getDescription());
 		buddyTransaction.setAmount(sendMoneyDTO.getAmount());
 		buddyTransaction.setDate(LocalDate.now());

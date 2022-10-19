@@ -61,21 +61,22 @@ CREATE TABLE transaction (
   amount INTEGER NOT NULL,
   date DATE NOT NULL,
   user_id INTEGER NOT NULL,
+  buddy_id INTEGER NOT NULL,
   done BOOLEAN DEFAULT false,
   FOREIGN KEY (user_id) REFERENCES user(id)
   );
 
 -- Default values for table 'transaction'
 
-INSERT INTO transaction (user_id,transaction_number,description,amount,date,done)
+INSERT INTO transaction (user_id,buddy_id,transaction_number,description,amount,date,done)
 VALUES
-(1,1,'Initial deposit',350,'2022-01-01',false),
-(2,2,'Initial deposit',1500,'2022-01-01',false),
-(4,3,'Initial deposit',900,'2022-01-01',false),
-(1,4,'Medical support',-100,'2022-07-25',false),
-(3,4,'Medical support',100,'2022-07-25',false),
-(2,5,'Medical support',-250,'2022-08-21',false),
-(3,5,'Medical support',250,'2022-08-21',false),
-(2,6,'Medical support',-200,'2022-09-10',false),
-(1,6,'Medical support',200,'2022-09-10',false);
+(1,1,1,'Initial deposit',350,'2022-01-01',false),
+(2,2,2,'Initial deposit',1500,'2022-01-01',false),
+(4,4,3,'Initial deposit',900,'2022-01-01',false),
+(1,3,4,'Medical support',-100,'2022-07-25',false),
+(3,1,4,'Medical support',100,'2022-07-25',false),
+(2,3,5,'Medical support',-250,'2022-08-21',false),
+(3,2,5,'Medical support',250,'2022-08-21',false),
+(2,1,6,'Medical support',-200,'2022-09-10',false),
+(1,2,6,'Medical support',200,'2022-09-10',false);
 
