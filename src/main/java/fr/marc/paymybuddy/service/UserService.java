@@ -51,9 +51,14 @@ public class UserService {
 	 */
 	public int getBalance(Integer id) {
 		List<Transaction> transactions = new ArrayList<>();
-		transactions = transactionRepository.findAllByUser(userRepository.findById(id).get());
 		sum = 0;
-		transactions.forEach(t -> sum += t.getAmount());
+		try {
+			transactions = transactionRepository.findAllByUser(userRepository.findById(id).get());
+			transactions.forEach(t -> sum += t.getAmount());
+		} catch (Exception e) {
+			log.warn("There is no user with id = "+id);
+		}
+
 		return sum;
 	}
 	
@@ -64,7 +69,7 @@ public class UserService {
 
 	public List<Connection> getBuddies(Integer user_id) {
 		User user = userRepository.findById(user_id).get();
-		log.info("getBuddies method for - user = "+user.getFirsName()+" "+user.getLastName());
+		log.info("getBuddies method for - user = "+user.getFirstName()+" "+user.getLastName());
 		return connectionRepository.findAllByUser(user);
 		}
 	

@@ -74,8 +74,8 @@ VALUES
 (4,3,'Initial deposit',900,'2022-01-01',false),
 (1,4,'Medical support',-100,'2022-07-25',false),
 (3,4,'Medical support',100,'2022-07-25',false),
-(2,6,'Medical support',-250,'2022-08-21',false),
-(3,6,'Medical support',250,'2022-08-21',false),
-(2,8,'Medical support',-200,'2022-09-10',false),
-(1,8,'Medical support',200,'2022-09-10',false);
+(2,5,'Medical support',-250,'2022-08-21',false),
+(3,5,'Medical support',250,'2022-08-21',false),
+(2,6,'Medical support',-200,'2022-09-10',false),
+(1,6,'Medical support',200,'2022-09-10',false);
 

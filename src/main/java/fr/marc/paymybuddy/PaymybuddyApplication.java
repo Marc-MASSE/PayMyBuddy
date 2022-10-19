@@ -30,13 +30,13 @@ public class PaymybuddyApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {	
 		Iterable<User> users = userService.getUsers();
-		users.forEach(u -> System.out.println(u.getFirsName()+" "+u.getLastName()));
+		users.forEach(u -> System.out.println(u.getFirstName()+" "+u.getLastName()));
 		
 		System.out.println("-------------------------------------------");
 		
 		Optional<User> user = userService.getUserById(1);
 		User userId1 = user.get();
-		System.out.println(userId1.getFirsName()+" "+userId1.getLastName());
+		System.out.println(userId1.getFirstName()+" "+userId1.getLastName());
 		
 		System.out.println("-------------------------------------------");
 		
