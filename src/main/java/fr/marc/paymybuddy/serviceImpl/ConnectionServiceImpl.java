@@ -1,4 +1,4 @@
-package fr.marc.paymybuddy.service;
+package fr.marc.paymybuddy.serviceImpl;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import fr.marc.paymybuddy.repository.ConnectionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
 
 @Service
-public class ConnectionService {
+public class ConnectionServiceImpl {
 	
 	/*
 	static Logger log = LogManager.getLogger(ConnectionService.class.getName());

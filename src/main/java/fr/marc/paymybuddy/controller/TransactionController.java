@@ -16,8 +16,9 @@ import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.DTO.TransactionDTO;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
-import fr.marc.paymybuddy.service.TransactionService;
-import fr.marc.paymybuddy.service.UserService;
+import fr.marc.paymybuddy.service.ITransactionService;
+import fr.marc.paymybuddy.serviceImpl.TransactionServiceImpl;
+import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 
 /*
@@ -31,10 +32,10 @@ public class TransactionController {
 	static Logger log = LogManager.getLogger(TransactionController.class.getName());
 
 	@Autowired
-	private TransactionService transactionService;
+	private ITransactionService transactionService;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 
 	@GetMapping("/transactions")
 	public Iterable<Transaction> getTransactions() {

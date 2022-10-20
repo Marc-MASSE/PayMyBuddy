@@ -1,4 +1,4 @@
-package fr.marc.paymybuddy.service;
+package fr.marc.paymybuddy.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +16,28 @@ import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.ConnectionRepository;
 import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
+import fr.marc.paymybuddy.service.IUserService;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements IUserService {
 	
-	static Logger log = LogManager.getLogger(UserService.class.getName());
+	static Logger log = LogManager.getLogger(UserServiceImpl.class.getName());
 	
-	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
 	private TransactionRepository transactionRepository;
 	
-	@Autowired
 	private ConnectionRepository connectionRepository;
 	
-	
 	private int sum;
+	
+	@Autowired
+	public UserServiceImpl(UserRepository userRepository,TransactionRepository transactionRepository,ConnectionRepository connectionRepository) {
+		this.userRepository = userRepository;
+		this.transactionRepository = transactionRepository;
+		this.connectionRepository = connectionRepository;
+	}
+	
 	
 	public Iterable<User> getUsers(){
 		return userRepository.findAll();
@@ -58,7 +63,6 @@ public class UserService {
 		} catch (Exception e) {
 			log.warn("There is no user with id = "+id);
 		}
-
 		return sum;
 	}
 	

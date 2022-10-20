@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
-import fr.marc.paymybuddy.service.UserService;
+import fr.marc.paymybuddy.service.IUserService;
+import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 /*
  * Controller used for end point /user
@@ -30,7 +31,7 @@ public class UserController {
 	static Logger log = LogManager.getLogger(UserController.class.getName());
 
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
 
 	@GetMapping("/users")
 	public Iterable<User> getUsers() {
@@ -85,6 +86,11 @@ public class UserController {
     public void deletePersonByParam(@RequestParam int id) {
 		log.info("DELETE request - endpoint /user - id = "+id);
         userService.deleteUser(id);
+    }
+    
+    @GetMapping("/")
+    public String login() {
+        return "login";
     }
     
 }

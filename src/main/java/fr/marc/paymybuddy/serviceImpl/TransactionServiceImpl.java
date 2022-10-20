@@ -1,4 +1,4 @@
-package fr.marc.paymybuddy.service;
+package fr.marc.paymybuddy.serviceImpl;
 
 import java.util.Optional;
 
@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.repository.TransactionRepository;
+import fr.marc.paymybuddy.service.ITransactionService;
 
 @Service
-public class TransactionService {
+public class TransactionServiceImpl implements ITransactionService {
 	
 	@Autowired
 	private TransactionRepository transactionRepository;

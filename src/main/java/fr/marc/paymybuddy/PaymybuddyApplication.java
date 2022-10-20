@@ -11,14 +11,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.TransactionRepository;
-import fr.marc.paymybuddy.service.TransactionService;
-import fr.marc.paymybuddy.service.UserService;
+import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 @SpringBootApplication
 public class PaymybuddyApplication implements CommandLineRunner {
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userService;
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
@@ -50,6 +49,7 @@ public class PaymybuddyApplication implements CommandLineRunner {
 		
 		System.out.println("-------------------------------------------");
 		
+		System.out.println("-------------------------------------------");
 		
 	}
 	
