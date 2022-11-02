@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
@@ -23,7 +24,11 @@ public interface IUserService {
 	
 	List<ActivityDTO> getActivityById(Integer id);
 	
-	List<Connection> getBuddies(Integer user_id);
+	List<ActivityDTO> getTransactionsById(Integer id);
+	
+	//List<Connection> getBuddies(Integer user_id);
+	
+	List<BuddyDTO> getBuddyList(Integer user_id);
 	
 	int verifyLogin(LoginDTO loginDTO);
 	

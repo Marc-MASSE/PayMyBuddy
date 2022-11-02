@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.controller.UserController;
@@ -99,12 +100,46 @@ public class UserServiceImpl implements IUserService {
 		return activitiesDTO;
 	}
 	
-
+	/*
+	 * List of payments to buddies
+	 * A payment means that the amount is negative and the buddy isn't the user
+	 */
+	public List<ActivityDTO> getTransactionsById(Integer id) {
+		List<ActivityDTO> transactions = new ArrayList<>();
+		List<ActivityDTO> activities = getActivityById(id);
+		activities.forEach(a -> {
+			if (a.getAmount()<0&&
+				!a.getBuddyName().contains(getUserById(id).get().getFirstName())&&
+				!a.getBuddyName().contains(getUserById(id).get().getLastName())) {
+				a.setAmount(-a.getAmount());
+				transactions.add(a);
+			}
+		});
+		return transactions;
+	}
+	
+	/*
 	public List<Connection> getBuddies(Integer user_id) {
 		User user = userRepository.findById(user_id).get();
 		log.info("getBuddies method for - user = "+user.getFirstName()+" "+user.getLastName());
 		return connectionRepository.findAllByUser(user);
 		}
+	*/
+	
+	public List<BuddyDTO> getBuddyList(Integer user_id) {
+		User user = userRepository.findById(user_id).get();
+		log.info("getBuddyList method for - id = "+user_id);
+		List<Connection> buddies = connectionRepository.findAllByUser(user);
+		List<BuddyDTO> buddyList = new ArrayList<>();
+		buddies.forEach(b -> {
+			BuddyDTO buddy = new BuddyDTO();
+			buddy.setId(b.getBuddy_id());
+			buddy.setBuddyName(getUserById(b.getBuddy_id()).get().getFirstName()+" "+getUserById(b.getBuddy_id()).get().getLastName());
+			buddyList.add(buddy);
+		});
+		return buddyList;
+		}
+	
 	/*
 	 * If email unknown return 0.
 	 * If password doesn't match return -1.

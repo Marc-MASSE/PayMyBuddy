@@ -39,15 +39,4 @@ public class Connection {
 			nullable = false)
 	private User user;
 	
-	/*
-	// buddy_id (FK)
-	@ManyToOne (
-			fetch =FetchType.LAZY,
-			optional = false)
-	@JoinColumn(
-			name = "buddy_id",
-			nullable = false)
-	private User buddy;
-	*/
-
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
@@ -149,13 +150,33 @@ public class UserController {
         return "home";
     }
 	
-    
+    /*
 	@ResponseBody
     @GetMapping("/buddies")
     public List<Connection> getBuddiesById(@RequestParam int user_id) {
 		log.info("GET request - endpoint /buddies - user_id = "+user_id);
         return userService.getBuddies(user_id);
     }
+	*/
+	
+	/*
+	 * Page "Transfer"
+	*/
+    @GetMapping("/transfer")
+    public String displayTransferPageById(Model model,@RequestParam int id) {
+		log.info("GET request - endpoint /transfer - id = "+id);
+		User user = userService.getUserById(id).get();
+		model.addAttribute("user",user);
+		List<BuddyDTO> buddyList = userService.getBuddyList(id);
+		model.addAttribute("buddyList",buddyList);
+		log.debug("Buddy list = "+buddyList);
+		List<ActivityDTO> transactions = userService.getTransactionsById(id);
+		model.addAttribute("transactions",transactions);
+		log.debug("Transactions list = "+transactions);
+        return "transfer";
+    }
+	
+	
     
 	@ResponseBody
     @PostMapping(value = "/user")

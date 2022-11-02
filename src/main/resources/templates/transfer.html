@@ -40,46 +40,64 @@
 			<span class="mx-1">
 				<a th:href="@{home(id=${user.id})}">Home /</a>
 			</span>
-			<span class="mx-1">Profile</span>
+			<span class="mx-1">Transfer</span>
 		</div>
 
-		<!-- Welcome and Balance box -->
+		<!-- Title and Add Connection box -->
 		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto my-4">
-			<div class="col-4 fs-3 d-flex align-items-center">
-				<span class="me-2">Welcome</span>
-				<span th:text="${user.firstName}">First Name</span>
+			<div class="col-5 fs-5 d-flex align-items-center">
+				<span>Send Money</span>
 			</div>
-			<div class="col-4">
-				<p class="my-0">Balance</p>
-				<p class="fs-3 border border-secondary rounded mx-auto text-center">
-					<span th:text="${balance}"></span>
-					<span>&#8364;</span>
-				</p>
+			<div class="col-3 bg-primary text-white rounded py-2">
+				<a class="text-center text-white">Add Connection</a>
 			</div>
-
 		</div>
+		
+		
+		<!-- Send Money box -->
+		<div class="row col-md-8 col-xs-12 bg-light d-flex justify-content-around mx-auto py-4">
+			<div class="col-3 dropdow">
+ 				<!--
+ 				<button class="dropdown-toggle" type="button" id="dropdownmenu" data-bs-toggle="dropdown" aria-expanded="false">
+						Select a Connection
+				</button>
+				-->
+				<select class="w-100">
+					<option value=""> Select A Connection </option>
+                    <option th:each="b:${buddyList}"
+                            th:value="${b.id}"
+                            th:utext="${b.buddyName}"/>
+                 </select>
+				
+				<!-- 
+				<div class="dropdown-menu" aria-labelledby="dropdownmenu" th:each="b:${buddyList}">
+					<p class="dropdown-item" th:text="${b.buddyName}"></p>
+				</div>
+				-->
+			</div>
+			<div class="col-3">
+				<input type="number">
+			</div>
+			<div class="col-3">
+				<button type="submit" class="green_context text-white rounded w-100">Pay</button>
+			</div>
+		</div>
+		
 		
 		<!-- My activities table -->
 		<div class="row col-md-8 col-xs-12 mx-auto my-4">
-			<p class="fs-5 mb-0">My activities</p>
+			<p class="fs-5 mb-0">My transactions</p>
 			<table class="table table-striped border border-secondary text-center">
 				<thead>
 					<tr class="green_context">
-						<th></th>
 						<th>Connections</th>
-						<th>Date</th>
 						<th>Description</th>
 						<th>Amount</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="act:${activities}">
-						<td>
-							<img th:if="${act.arrow}" th:src="@{/images/arrow-right.png}" alt="Right arrow"/>
-							<img th:unless="${act.arrow}" th:src="@{/images/arrow-left.png}" alt="Right arrow"/>
-						</td>
+					<tr th:each="act:${transactions}">
 						<td th:text="${act.buddyName}">Buddy name</td>
-						<td th:text="${act.date}">Date</td>
 						<td th:text="${act.description}">Description</td>
 						<td>
 							<span th:text="${act.amount}">Amount</span>

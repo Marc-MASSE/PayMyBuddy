@@ -21,6 +21,7 @@ import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.ConnectionRepository;
 import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
+import fr.marc.paymybuddy.service.ITransactionService;
 import fr.marc.paymybuddy.service.IUserService;
 import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
@@ -38,13 +39,16 @@ public class UserServiceImplTest {
 	@Mock
 	private ConnectionRepository connectionRepository;
 	
+	@Mock
+	private ITransactionService transactionService;
+	
 	private User user1;
 	private User user2;
 	
 	
 	@BeforeEach
 	public void init() {
-		userService = new UserServiceImpl(userRepository, transactionRepository, connectionRepository);
+		userService = new UserServiceImpl(userRepository, transactionRepository, connectionRepository, transactionService);
 		user1 = User.builder()
 				.id(1)
 				.email("user1@mail.fr")
