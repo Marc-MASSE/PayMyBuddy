@@ -38,32 +38,33 @@ public class UserServiceImplTest {
 	@Mock
 	private ConnectionRepository connectionRepository;
 	
-	//private User user1 = new User(1,"acall@mail.fr","Arthur","Call","Excalibur",false,"FR00123456789","Camelot");
-	private User user1 = User.builder()
-			.id(1)
-			.email("user1@mail.fr")
-			.firstName("Prénom1")
-			.lastName("Nom1")
-			.password("111")
-			.rememberMe(false)
-			.iban("FR001")
-			.bank("Banque1")
-			.build();
-	private User user2 = User.builder()
-			.id(2)
-			.email("user2@mail.fr")
-			.firstName("Prénom2")
-			.lastName("Nom2")
-			.password("222")
-			.rememberMe(false)
-			.iban("FR002")
-			.bank("Banque2")
-			.build();
+	private User user1;
+	private User user2;
 	
 	
 	@BeforeEach
 	public void init() {
 		userService = new UserServiceImpl(userRepository, transactionRepository, connectionRepository);
+		user1 = User.builder()
+				.id(1)
+				.email("user1@mail.fr")
+				.firstName("Prénom1")
+				.lastName("Nom1")
+				.password("111")
+				.rememberMe(false)
+				.iban("FR001")
+				.bank("Banque1")
+				.build();
+		user2 = User.builder()
+				.id(2)
+				.email("user2@mail.fr")
+				.firstName("Prénom2")
+				.lastName("Nom2")
+				.password("222")
+				.rememberMe(false)
+				.iban("FR002")
+				.bank("Banque2")
+				.build();
 	}
 	
 	@Test

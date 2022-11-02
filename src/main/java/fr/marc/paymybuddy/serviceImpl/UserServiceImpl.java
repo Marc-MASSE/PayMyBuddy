@@ -1,5 +1,6 @@
 package fr.marc.paymybuddy.serviceImpl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +9,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.LoginDTO;
+import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.controller.UserController;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.Transaction;
@@ -16,6 +22,7 @@ import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.ConnectionRepository;
 import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
+import fr.marc.paymybuddy.service.ITransactionService;
 import fr.marc.paymybuddy.service.IUserService;
 
 @Service
@@ -29,13 +36,16 @@ public class UserServiceImpl implements IUserService {
 	
 	private ConnectionRepository connectionRepository;
 	
+	private ITransactionService transactionService;
+	
 	private int sum;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository,TransactionRepository transactionRepository,ConnectionRepository connectionRepository) {
+	public UserServiceImpl(UserRepository userRepository,TransactionRepository transactionRepository,ConnectionRepository connectionRepository,ITransactionService transactionService) {
 		this.userRepository = userRepository;
 		this.transactionRepository = transactionRepository;
 		this.connectionRepository = connectionRepository;
+		this.transactionService = transactionService;
 	}
 	
 	
@@ -58,7 +68,7 @@ public class UserServiceImpl implements IUserService {
 		List<Transaction> transactions = new ArrayList<>();
 		sum = 0;
 		try {
-			transactions = transactionRepository.findAllByUser(userRepository.findById(id).get());
+			transactions = transactionRepository.findAllByUserOrderByIdDesc(userRepository.findById(id).get());
 			transactions.forEach(t -> sum += t.getAmount());
 		} catch (Exception e) {
 			log.warn("There is no user with id = "+id);
@@ -68,14 +78,82 @@ public class UserServiceImpl implements IUserService {
 	
 	public List<Transaction> getActivity(Integer id) {
 		User user = userRepository.findById(id).get();
-		return transactionRepository.findAllByUser(user);
+		return transactionRepository.findAllByUserOrderByIdDesc(user);
 		}
+	
+	public List<ActivityDTO> getActivityById(Integer id) {
+		User user = userRepository.findById(id).get();
+		List<Transaction> activities = transactionRepository.findAllByUserOrderByIdDesc(user);
+		List<ActivityDTO> activitiesDTO = new ArrayList<>();
+		activities.forEach(a -> {
+			ActivityDTO activityDTO = new ActivityDTO();
+			// arrow=true(right) if amount>=0, arrow= false(left) unless
+			activityDTO.setArrow(a.getAmount()>=0);
+			User buddy = userRepository.findById(a.getBuddy_id()).get();
+			activityDTO.setBuddyName(buddy.getFirstName()+" "+buddy.getLastName());
+			activityDTO.setDate(a.getDate().toString());
+			activityDTO.setDescription(a.getDescription());
+			activityDTO.setAmount(a.getAmount());
+			activitiesDTO.add(activityDTO);
+		});
+		return activitiesDTO;
+	}
+	
 
 	public List<Connection> getBuddies(Integer user_id) {
 		User user = userRepository.findById(user_id).get();
 		log.info("getBuddies method for - user = "+user.getFirstName()+" "+user.getLastName());
 		return connectionRepository.findAllByUser(user);
 		}
+	/*
+	 * If email unknown return 0.
+	 * If password doesn't match return -1.
+	 * If email and password matched return the user id.
+	 */
+	public int verifyLogin(LoginDTO loginDTO) {
+		int user_id = -1;
+		try {
+			User user = getUserByEmail(loginDTO.getEmail()).get();
+			if (user.getPassword().equals(loginDTO.getPassword())) {
+				user_id = user.getId();
+			}
+		} catch (Exception e) {
+			user_id = 0;
+		}
+		return user_id;
+	}
+	
+	/*
+	 * User send money to Buddy => 2 transactions
+	 * User : transaction with negative amount
+	 * Buddy : transaction with positive amount
+	 * 
+	 */
+    public void sendMoneyToBuddy (SendMoneyDTO sendMoneyDTO) {
+		log.info("POST request - endpoint /sendmoney - from "+sendMoneyDTO.getUser_id()+" to "+sendMoneyDTO.getBuddy_id()+" pay = "+sendMoneyDTO.getAmount());
+		
+		// User : transaction with negative amount
+		Transaction userTransaction = new Transaction();
+		userTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		userTransaction.setBuddy_id(sendMoneyDTO.getBuddy_id());
+		userTransaction.setDescription(sendMoneyDTO.getDescription());
+		userTransaction.setAmount(-sendMoneyDTO.getAmount());
+		userTransaction.setDate(LocalDate.now());
+		userTransaction.setUser(getUserById(sendMoneyDTO.getUser_id()).get());
+		
+		// Buddy : transaction with positive amount
+		Transaction buddyTransaction = new Transaction();
+		buddyTransaction.setTransactionNumber(transactionService.getNextTransactionNumber());
+		buddyTransaction.setBuddy_id(sendMoneyDTO.getUser_id());
+		buddyTransaction.setDescription(sendMoneyDTO.getDescription());
+		buddyTransaction.setAmount(sendMoneyDTO.getAmount());
+		buddyTransaction.setDate(LocalDate.now());
+		buddyTransaction.setUser(getUserById(sendMoneyDTO.getBuddy_id()).get());
+		
+		transactionService.addTransaction(userTransaction);
+		transactionService.addTransaction(buddyTransaction);
+    }
+	
 	
 	public User addUser(User user) {
 		return userRepository.save(user);

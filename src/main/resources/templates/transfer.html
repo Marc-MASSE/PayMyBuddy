@@ -13,7 +13,7 @@
 <link rel="stylesheet" type="text/css" href="../static/style.css"
 	th:href="@{style.css}" />
 
-<title>Home</title>
+<title>Transfer</title>
 
 </head>
 <body class="mx-auto">
@@ -28,8 +28,8 @@
 
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1 text-primary">Home</li>
-					<li class="mx-1"><a th:href="@{transfer(id=${user.id})}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
+					<li class="mx-1 text-primary">Transfer</li>
 					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
 					<li class="mx-1"><a>Contact</a></li>
 					<li class="mx-1"><a th:href="@{login}">Log off</a></li>
@@ -37,7 +37,10 @@
 			</div>
 		</div>
 		<div class="bg-light">
-			<span class="mx-1">Home /</span>
+			<span class="mx-1">
+				<a th:href="@{home(id=${user.id})}">Home /</a>
+			</span>
+			<span class="mx-1">Profile</span>
 		</div>
 
 		<!-- Welcome and Balance box -->
