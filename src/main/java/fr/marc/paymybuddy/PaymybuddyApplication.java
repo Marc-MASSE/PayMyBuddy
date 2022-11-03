@@ -11,13 +11,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.TransactionRepository;
+import fr.marc.paymybuddy.service.IUserService;
 import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 @SpringBootApplication
 public class PaymybuddyApplication implements CommandLineRunner {
 	
 	@Autowired
-	private UserServiceImpl userService;
+	private IUserService userService;
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
@@ -28,6 +29,8 @@ public class PaymybuddyApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {	
+		
+		
 		Iterable<User> users = userService.getUsers();
 		users.forEach(u -> System.out.println(u.getFirstName()+" "+u.getLastName()));
 		

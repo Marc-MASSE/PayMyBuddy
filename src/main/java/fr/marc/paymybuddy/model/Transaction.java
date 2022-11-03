@@ -33,7 +33,7 @@ public class Transaction {
 	private int transactionNumber;
 	
 	@Column(name = "buddy_id")
-	private int buddy_id;
+	private int buddyId;
 
 	@Column(name = "description")
 	private String description;

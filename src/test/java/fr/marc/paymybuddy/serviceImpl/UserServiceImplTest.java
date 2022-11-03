@@ -33,14 +33,6 @@ public class UserServiceImplTest {
 	@Mock
 	private UserRepository userRepository;
 	
-	@Mock
-	private TransactionRepository transactionRepository;
-	
-	@Mock
-	private ConnectionRepository connectionRepository;
-	
-	@Mock
-	private ITransactionService transactionService;
 	
 	private User user1;
 	private User user2;
@@ -48,7 +40,7 @@ public class UserServiceImplTest {
 	
 	@BeforeEach
 	public void init() {
-		userService = new UserServiceImpl(userRepository, transactionRepository, connectionRepository, transactionService);
+		userService = new UserServiceImpl(userRepository);
 		user1 = User.builder()
 				.id(1)
 				.email("user1@mail.fr")

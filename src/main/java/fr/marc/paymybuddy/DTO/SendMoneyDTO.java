@@ -2,14 +2,16 @@ package fr.marc.paymybuddy.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class SendMoneyDTO {
 	
-	private int user_id;
+	private int userId;
 	
-	private int buddy_id;
+	private int buddyId;
 	
 	private String description;
 

@@ -55,32 +55,28 @@
 		
 		
 		<!-- Send Money box -->
-		<div class="row col-md-8 col-xs-12 bg-light d-flex justify-content-around mx-auto py-4">
-			<div class="col-3 dropdow">
- 				<!--
- 				<button class="dropdown-toggle" type="button" id="dropdownmenu" data-bs-toggle="dropdown" aria-expanded="false">
-						Select a Connection
-				</button>
-				-->
-				<select class="w-100">
-					<option value=""> Select A Connection </option>
-                    <option th:each="b:${buddyList}"
-                            th:value="${b.id}"
-                            th:utext="${b.buddyName}"/>
-                 </select>
-				
-				<!-- 
-				<div class="dropdown-menu" aria-labelledby="dropdownmenu" th:each="b:${buddyList}">
-					<p class="dropdown-item" th:text="${b.buddyName}"></p>
+		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
+			<form method="post" th:action="@{sendOperation}" th:object="${sendMoneyDTO}">
+				<div class="row d-flex justify-content-around">
+					<div class="col-3 dropdow">
+						<select class="w-100" th:field="*{buddy_id}">
+							<option value="0">Select a Connection</option>
+		                    <option th:each="b:${buddyList}"
+		                            th:value="${b.id}"
+		                            th:utext="${b.buddyName}"/>
+		                 </select>
+					</div>
+					<div class="col-3">
+						<input type="number" th:field="*{amount}"/>
+					</div>
+					<div class="col-3">
+						<button type="submit" class="green_context text-white rounded w-100">Pay</button>
+					</div>
 				</div>
-				-->
-			</div>
-			<div class="col-3">
-				<input type="number">
-			</div>
-			<div class="col-3">
-				<button type="submit" class="green_context text-white rounded w-100">Pay</button>
-			</div>
+				<div class="row">
+					<input class="col-10 mx-auto mt-4" type="text" placeholder="Description" th:field="*{description}"/>
+				</div>
+			</form>
 		</div>
 		
 		

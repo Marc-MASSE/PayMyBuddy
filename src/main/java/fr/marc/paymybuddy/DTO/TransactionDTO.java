@@ -23,6 +23,6 @@ public class TransactionDTO {
 
 	private boolean done;
 	
-	private int user_id;
+	private int userId;
 
 }

@@ -28,7 +28,7 @@ public class Connection {
 	private int id;
 	
 	@Column(name = "buddy_id")
-	private int buddy_id;
+	private int buddyId;
 	
 	// user_id (FK)
 	@ManyToOne (

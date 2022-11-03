@@ -16,24 +16,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
-import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
-import fr.marc.paymybuddy.model.Connection;
-import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
+import fr.marc.paymybuddy.service.ITransactionService;
 import fr.marc.paymybuddy.service.IUserService;
-import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 /*
  * Controller used for end point /user
  * For updating user's data list
  */
 
-//@RestController
 @Controller
 public class UserController {
 
@@ -41,6 +35,9 @@ public class UserController {
 
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private ITransactionService transactionService;
 
 	@ResponseBody
 	@GetMapping("/users")
@@ -67,28 +64,6 @@ public class UserController {
         return "profile";
     }
 	
-    /*
-	@ResponseBody
-    @GetMapping("/login")
-    public Optional<User> getUserByEmail(@RequestParam String email) {
-		log.info("GET request - endpoint /login - email = "+email);
-        return userService.getUserByEmail(email);
-    }
-	*/
-	
-    /*
-	@PostMapping("/login")
-	public ModelAndView getLogin(Model model,@ModelAttribute LoginDTO loginDTO) {
-		User user = userService.getUserByEmail(loginDTO.getEmail()).get();
-		log.debug("Login - firstName = "+user.getFirstName()+" lastName = "+user.getLastName());
-		if (user.getPassword().equals(loginDTO.getPassword())) {
-			model.addAttribute("user",user);
-			return new ModelAndView("redirect:/user");
-		}else {
-			return new ModelAndView("redirect:/login");
-		}
-	}
-	*/
 	
 	/*
 	 * Page "Login"
@@ -101,22 +76,29 @@ public class UserController {
 	
 	/*
 	 * Page "Login", verify if email and password match
-	 * If email unknown return 0.
-	 * If password doesn't match return -1.
-	 * If email and password matched return the user id.
+	 * If user_id = 0 => message email unknown
+	 * If user_id = -1 => message password doesn't match
+	 * If email and password matched redirect to Home page.
 	 */
     @PostMapping(value = "/loginRequest")
-    public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO) {
+    public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO, Model model) {
 		log.info("POST request - endpoint /loginRequest - body = "+loginDTO);
-		Integer user_id = userService.verifyLogin(loginDTO);
-		log.debug("user_id = "+user_id);
-		switch(user_id) {
+		Integer userId = userService.verifyLogin(loginDTO);
+		log.debug("user_id = "+userId);
+		String message;
+		switch(userId) {
 		  case 0:
+			  message = "Your email isn't registed";
+			  model.addAttribute(message);
+			  log.debug("Message = "+message);
 			  return "redirect:/login";
 		  case -1:
+			  message = "The assword doesn't match with your email";
+			  model.addAttribute(message);
+			  log.debug("Message = "+message);
 			  return "redirect:/login";
 		  default:
-			  return "redirect:/home?id="+user_id.toString();
+			  return "redirect:/home?id="+userId.toString();
 		}
     }
 	
@@ -125,14 +107,14 @@ public class UserController {
     @GetMapping("/balance")
     public int getBalanceById(@RequestParam int id) {
 		log.info("GET request - endpoint /balance - id = "+id);
-        return userService.getBalance(id);
+        return transactionService.getBalance(id);
     }
     
 	@ResponseBody
     @GetMapping("/activity")
     public List<ActivityDTO> getActivityById(@RequestParam int id) {
 		log.info("GET request - endpoint /activity - id = "+id);
-        return userService.getActivityById(id);
+        return transactionService.getActivityById(id);
     }
 	
 	/*
@@ -143,39 +125,12 @@ public class UserController {
 		log.info("GET request - endpoint /home - id = "+id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
-		int balance = userService.getBalance(id);
+		int balance = transactionService.getBalance(id);
 		model.addAttribute("balance",balance);
-		List<ActivityDTO> activities = userService.getActivityById(id);
+		List<ActivityDTO> activities = transactionService.getActivityById(id);
 		model.addAttribute("activities",activities);
         return "home";
     }
-	
-    /*
-	@ResponseBody
-    @GetMapping("/buddies")
-    public List<Connection> getBuddiesById(@RequestParam int user_id) {
-		log.info("GET request - endpoint /buddies - user_id = "+user_id);
-        return userService.getBuddies(user_id);
-    }
-	*/
-	
-	/*
-	 * Page "Transfer"
-	*/
-    @GetMapping("/transfer")
-    public String displayTransferPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /transfer - id = "+id);
-		User user = userService.getUserById(id).get();
-		model.addAttribute("user",user);
-		List<BuddyDTO> buddyList = userService.getBuddyList(id);
-		model.addAttribute("buddyList",buddyList);
-		log.debug("Buddy list = "+buddyList);
-		List<ActivityDTO> transactions = userService.getTransactionsById(id);
-		model.addAttribute("transactions",transactions);
-		log.debug("Transactions list = "+transactions);
-        return "transfer";
-    }
-	
 	
     
 	@ResponseBody
@@ -200,8 +155,11 @@ public class UserController {
     }
     
     @GetMapping("/")
-    public String login() {
-        return "login";
+    public String login(Model model) {
+		log.info("Redirect to Login page");
+		String message ="";
+		model.addAttribute(message);
+        return "redirect:/login";
     }
     
 }
