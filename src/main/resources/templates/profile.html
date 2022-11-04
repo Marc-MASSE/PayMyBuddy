@@ -29,7 +29,7 @@
 					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
 					<li class="mx-1"><a th:href="@{transfer(id=${user.id})}">Transfer</a></li>
 					<li class="mx-1 text-primary">Profile</li>
-					<li class="mx-1"><a>Contact</a></li>
+					<li class="mx-1"><a th:href="@{contact(id=${user.id})}">Contact</a></li>
 					<li class="mx-1"><a th:href="@{login}">Log off</a></li>
 				</ul>
 			</div>
@@ -99,7 +99,9 @@
 			</table>			
 			
 			<!-- Modify button -->
-			<div class="green_context rounded mx-auto my-2 w-50">Modify</div>
+			<div class="green_context rounded mx-auto my-2 w-50">
+				<a class="text-white" th:href="@{modify(id=${user.id})}">Modify</a>
+			</div>
 		</div>
 
 	</div>

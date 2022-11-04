@@ -35,55 +35,19 @@
 			</div>
 		</div>
 		<div class="bg-light">
-			<span class="mx-1">Home /</span>
+			<span class="mx-1">
+				<a th:href="@{home(id=${user.id})}">Home /</a>
+			</span>
+			<span class="mx-1">Contact</span>
 		</div>
 
-		<!-- Welcome and Balance box -->
-		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto my-4">
-			<div class="col-4 fs-3 d-flex align-items-center">
-				<span class="me-2">Welcome</span>
-				<span th:text="${user.firstName}">First Name</span>
-			</div>
-			<div class="col-4">
-				<p class="my-0">Balance</p>
-				<p class="fs-3 border border-secondary rounded mx-auto text-center">
-					<span th:text="${balance}"></span>
-					<span>&#8364;</span>
-				</p>
-			</div>
-
+		<!-- Contact box -->
+		<div class="col-md-6 col-xs-12 mx-auto mt-4">
+			<p class="fs-5 mb-0">Contact us</p>
 		</div>
-		
-		<!-- My activities table -->
-		<div class="row col-md-8 col-xs-12 mx-auto my-4">
-			<p class="fs-5 mb-0">My activities</p>
-			<table class="table table-striped border border-secondary text-center">
-				<thead>
-					<tr class="green_context">
-						<th></th>
-						<th>Connections</th>
-						<th>Date</th>
-						<th>Description</th>
-						<th>Amount</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="act:${activities}">
-						<td>
-							<img th:if="${act.arrow}" th:src="@{/images/arrow-right.png}" alt="Right arrow"/>
-							<img th:unless="${act.arrow}" th:src="@{/images/arrow-left.png}" alt="Right arrow"/>
-						</td>
-						<td th:text="${act.buddyName}">Buddy name</td>
-						<td th:text="${act.date}">Date</td>
-						<td th:text="${act.description}">Description</td>
-						<td>
-							<span th:text="${act.amount}">Amount</span>
-							<span>&#8364;</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		
+		<div class="col-md-6 col-xs-12 border border-secondary rounded mx-auto mb-4">
+			<div><img class="w-100" th:src="@{/images/paymybuddy_big.png}" alt="Pay My Buddy image"/></div>	
+			<div class="green_context rounded mx-auto">www.paymybuddy.com</div>
 		</div>
 		
 	</div>

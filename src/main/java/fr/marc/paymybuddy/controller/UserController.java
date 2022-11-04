@@ -54,6 +54,17 @@ public class UserController {
     }
 	
 	/*
+	 * When open to "/" page, redirect to "Login" page
+	*/
+    @GetMapping("/")
+    public String login(Model model) {
+		log.info("Redirect to Login page");
+		String message ="";
+		model.addAttribute(message);
+        return "redirect:/login";
+    }
+	
+	/*
 	 * Page "Profile"
 	*/
     @GetMapping("/profile")
@@ -132,12 +143,44 @@ public class UserController {
         return "home";
     }
 	
+	/*
+	 * Page "Contact"
+	*/
+    @GetMapping("/contact")
+    public String displayContactPageById(Model model,@RequestParam int id) {
+		log.info("GET request - endpoint /contact - id = "+id);
+		User user = userService.getUserById(id).get();
+		model.addAttribute("user",user);
+        return "contact";
+    }
+    
+	/*
+	 * Page "Modify"
+	*/
+    @GetMapping("/modify")
+    public String displayModifyPageById(Model model,@RequestParam int id) {
+		log.info("GET request - endpoint /modify - id = "+id);
+		User user = userService.getUserById(id).get();
+		model.addAttribute("user",user);
+        return "modify";
+    }
     
 	@ResponseBody
     @PostMapping(value = "/user")
     public User addUser(@RequestBody User user) {
 		log.info("POST request - endpoint /user - body = "+user);
     	return userService.addUser(user);
+    }
+	
+	/*
+	 * Page "Modify" to update a user
+	*/
+    @PostMapping(value = "/saveUser")
+    public String saveUser(@ModelAttribute("modify") User user,@RequestParam Integer id) {
+    	user.setId(id);
+		log.info("POST request - endpoint /user - body = "+user);
+		userService.addUser(user);
+    	return "redirect:/profile?id="+id.toString();
     }
     
 	@ResponseBody
@@ -152,14 +195,6 @@ public class UserController {
     public void deletePersonByParam(@RequestParam int id) {
 		log.info("DELETE request - endpoint /user - id = "+id);
         userService.deleteUser(id);
-    }
-    
-    @GetMapping("/")
-    public String login(Model model) {
-		log.info("Redirect to Login page");
-		String message ="";
-		model.addAttribute(message);
-        return "redirect:/login";
     }
     
 }
