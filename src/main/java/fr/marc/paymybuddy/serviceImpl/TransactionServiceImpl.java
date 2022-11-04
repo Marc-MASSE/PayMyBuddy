@@ -55,7 +55,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	 * 
 	 */
     public void sendMoneyToBuddy (SendMoneyDTO sendMoneyDTO) {
-		log.info("POST request - endpoint /sendmoney - from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
+		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
 		
 		// User : transaction with negative amount
 		Transaction userTransaction = new Transaction();

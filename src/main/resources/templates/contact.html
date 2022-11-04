@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../static/style.css"
 	th:href="@{style.css}" />
 
-<title>Transfer</title>
+<title>Contact</title>
 
 </head>
 <body class="mx-auto">
@@ -27,71 +27,54 @@
 			<div class="col-9">
 				<ul class="nav justify-content-end">
 					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
-					<li class="mx-1 text-primary">Transfer</li>
+					<li class="mx-1"><a th:href="@{transfer(id=${user.id})}">Transfer</a></li>
 					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
-					<li class="mx-1"><a>Contact</a></li>
+					<li class="mx-1text-primary">Contact</li>
 					<li class="mx-1"><a th:href="@{login}">Log off</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="bg-light">
-			<span class="mx-1">
-				<a th:href="@{home(id=${user.id})}">Home /</a>
-			</span>
-			<span class="mx-1">Transfer</span>
+			<span class="mx-1">Home /</span>
 		</div>
 
-		<!-- Title and Add Connection box -->
+		<!-- Welcome and Balance box -->
 		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto my-4">
-			<div class="col-5 fs-5 d-flex align-items-center">
-				<span>Send Money</span>
+			<div class="col-4 fs-3 d-flex align-items-center">
+				<span class="me-2">Welcome</span>
+				<span th:text="${user.firstName}">First Name</span>
 			</div>
-			<div class="col-3 bg-primary text-white rounded py-2">
-				<a class="text-center text-white">Add Connection</a>
+			<div class="col-4">
+				<p class="my-0">Balance</p>
+				<p class="fs-3 border border-secondary rounded mx-auto text-center">
+					<span th:text="${balance}"></span>
+					<span>&#8364;</span>
+				</p>
 			</div>
+
 		</div>
-		
-		
-		<!-- Send Money box -->
-		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{sendOperation(id=${user.id})}" th:object="${sendMoneyDTO}">
-				<div class="row d-flex justify-content-around">
-					<div class="col-3 dropdow">
-						<select class="w-100" th:field="*{buddyId}">
-							<option value="0">Select a Connection</option>
-		                    <option th:each="b:${buddyList}"
-		                            th:value="${b.id}"
-		                            th:utext="${b.buddyName}"/>
-		                 </select>
-					</div>
-					<div class="col-3">
-						<input type="number" th:field="*{amount}"/>
-					</div>
-					<div class="col-3">
-						<button type="submit" class="green_context text-white rounded w-100">Pay</button>
-					</div>
-				</div>
-				<div class="row">
-					<input class="col-10 mx-auto mt-4" type="text" placeholder="Description" th:field="*{description}"/>
-				</div>
-			</form>
-		</div>
-		
 		
 		<!-- My activities table -->
 		<div class="row col-md-8 col-xs-12 mx-auto my-4">
-			<p class="fs-5 mb-0">My transactions</p>
+			<p class="fs-5 mb-0">My activities</p>
 			<table class="table table-striped border border-secondary text-center">
 				<thead>
 					<tr class="green_context">
+						<th></th>
 						<th>Connections</th>
+						<th>Date</th>
 						<th>Description</th>
 						<th>Amount</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="act:${transactions}">
+					<tr th:each="act:${activities}">
+						<td>
+							<img th:if="${act.arrow}" th:src="@{/images/arrow-right.png}" alt="Right arrow"/>
+							<img th:unless="${act.arrow}" th:src="@{/images/arrow-left.png}" alt="Right arrow"/>
+						</td>
 						<td th:text="${act.buddyName}">Buddy name</td>
+						<td th:text="${act.date}">Date</td>
 						<td th:text="${act.description}">Description</td>
 						<td>
 							<span th:text="${act.amount}">Amount</span>

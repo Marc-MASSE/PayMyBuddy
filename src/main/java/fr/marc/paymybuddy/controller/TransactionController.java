@@ -84,8 +84,7 @@ public class TransactionController {
 		log.debug("Transactions list = "+transactions);
 		
 		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
-		sendMoneyDTO.setUserId(id);
-		log.debug("SendMoneyDTO = "+sendMoneyDTO);
+		System.out.println(sendMoneyDTO.toString());
 		model.addAttribute("sendMoneyDTO",sendMoneyDTO);
 		
         return "transfer";
@@ -95,11 +94,11 @@ public class TransactionController {
 	 * Page "Transfer", send operation
 	 */
     @PostMapping(value = "/sendOperation")
-    public String sendOperation(@ModelAttribute("transfer") SendMoneyDTO sendMoneyDTO) {
+    public String sendOperation(@ModelAttribute("transfer") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
 		log.info("POST request - endpoint /sendOperation - body = "+sendMoneyDTO);
+		sendMoneyDTO.setUserId(id);
 		transactionService.sendMoneyToBuddy(sendMoneyDTO);
-		Integer userId = sendMoneyDTO.getUserId();
-		return "redirect:/transfer?id="+userId.toString();
+		return "redirect:/transfer?id="+id.toString();
     }
     
 }
