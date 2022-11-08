@@ -67,7 +67,11 @@ public class TransactionController {
     	return transactionService.addTransaction(transaction);
     }
 
-    
+	/*
+	 * Page "Transfer"
+	 * Display buddies list, gifts to buddy list
+	 * and a form to send money to a buddy
+	 */
     @GetMapping("/transfer")
     public String displayTransferPageById(Model model,@RequestParam int id) {
 		log.info("GET request - endpoint /transfer - id = "+id);

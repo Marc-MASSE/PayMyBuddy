@@ -12,5 +12,7 @@ import fr.marc.paymybuddy.model.User;
 public interface ConnectionRepository extends CrudRepository<Connection, Integer> {
 	
 	public List<Connection> findAllByUser(User user);
+	
+	public Connection findByUserIdAndBuddyId(Integer userId, Integer buddyId);
 
 }

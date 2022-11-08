@@ -44,9 +44,36 @@ public class ConnectionServiceImpl implements IConnectionService {
 			BuddyDTO buddy = new BuddyDTO();
 			buddy.setId(b.getBuddyId());
 			buddy.setBuddyName(userService.getUserById(b.getBuddyId()).get().getFirstName()+" "+userService.getUserById(b.getBuddyId()).get().getLastName());
+			buddy.setEmail(userService.getUserById(b.getBuddyId()).get().getEmail());
 			buddyList.add(buddy);
 		});
 		return buddyList;
 		}
+
+
+	@Override
+	public Connection getConnectionByUserIdAndBuddyId(Integer userId, Integer buddyId) {
+		return connectionRepository.findByUserIdAndBuddyId(userId,buddyId);
+	}
+
+
+	@Override
+	public Connection addConnection(Connection connection) {
+		return connectionRepository.save(connection);
+	}
+	
+	@Override
+	public Connection addANewBuddy(String email, Integer UserId) {
+		Connection connection = new Connection();
+		connection.setUser(userService.getUserById(UserId).get());
+		connection.setBuddyId(userService.getUserByEmail(email).get().getId());
+		
+		return connectionRepository.save(connection);
+	}
+	
+	@Override
+	public void deleteConnectionById(Integer id) {
+		connectionRepository.deleteById(id);
+	}
 
 }

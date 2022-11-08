@@ -1,8 +1,14 @@
 package fr.marc.paymybuddy.DTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ActivityDTO {
 	
 	// arrow=true(right) if amount>=0, arrow= false(left) unless

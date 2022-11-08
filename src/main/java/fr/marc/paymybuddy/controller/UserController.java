@@ -61,7 +61,7 @@ public class UserController {
 		log.info("Redirect to Login page");
 		String message ="";
 		model.addAttribute(message);
-        return "redirect:/login";
+        return "redirect:/login?message="+message;
     }
 	
 	/*
@@ -80,8 +80,9 @@ public class UserController {
 	 * Page "Login"
 	*/
 	@GetMapping("/login")
-	public String loginForm(Model model) {
+	public String loginForm(Model model,@RequestParam String message) {
 		model.addAttribute("loginDTO", new LoginDTO());
+		model.addAttribute("message", message);
 		return "login";
 	}
 	
@@ -95,19 +96,17 @@ public class UserController {
     public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO, Model model) {
 		log.info("POST request - endpoint /loginRequest - body = "+loginDTO);
 		Integer userId = userService.verifyLogin(loginDTO);
-		log.debug("user_id = "+userId);
+		log.info("user_id = "+userId);
 		String message;
 		switch(userId) {
 		  case 0:
 			  message = "Your email isn't registed";
-			  model.addAttribute(message);
-			  log.debug("Message = "+message);
-			  return "redirect:/login";
+			  log.info("Message = "+message);
+			  return "redirect:/login?message="+message;
 		  case -1:
-			  message = "The assword doesn't match with your email";
-			  model.addAttribute(message);
-			  log.debug("Message = "+message);
-			  return "redirect:/login";
+			  message = "The password doesn't match with your email";
+			  log.info("Message = "+message);
+			  return "redirect:/login?message="+message;
 		  default:
 			  return "redirect:/home?id="+userId.toString();
 		}

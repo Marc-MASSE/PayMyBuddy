@@ -80,6 +80,24 @@ public class TransactionServiceImpl implements ITransactionService {
     }
     
 	/*
+	 * User receive money from his bank => 1 transaction
+	 * User and Buddy are the same 
+	 */
+    public void receiveMoneyFromBank (SendMoneyDTO sendMoneyDTO) {
+		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
+		
+		Transaction userTransaction = new Transaction();
+		userTransaction.setTransactionNumber(getNextTransactionNumber());
+		userTransaction.setBuddyId(sendMoneyDTO.getUserId());
+		userTransaction.setDescription(sendMoneyDTO.getDescription());
+		userTransaction.setAmount(sendMoneyDTO.getAmount());
+		userTransaction.setDate(LocalDate.now());
+		userTransaction.setUser(userService.getUserById(sendMoneyDTO.getUserId()).get());
+		
+		addTransaction(userTransaction);
+    }
+    
+	/*
 	 * The balance is calculated as the sum of all transactions amounts for a user.
 	 */
 	public int getBalance(Integer id) {

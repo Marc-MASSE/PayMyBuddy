@@ -8,5 +8,6 @@ public class BuddyDTO {
 	private int id;
 	
 	private String buddyName;
-
+	
+	private String email;
 }
