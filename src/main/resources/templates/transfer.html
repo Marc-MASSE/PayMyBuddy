@@ -28,9 +28,10 @@
 				<ul class="nav justify-content-end">
 					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
 					<li class="mx-1 text-primary">Transfer</li>
+					<li class="mx-1"><a th:href="@{account(id=${user.id})}">Account</a></li>
 					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact(id=${user.id})}">Contact</a></li>
-					<li class="mx-1"><a th:href="@{login}">Log off</a></li>
+					<li class="mx-1"><a th:href="@{/}">Log off</a></li>
 				</ul>
 			</div>
 		</div>

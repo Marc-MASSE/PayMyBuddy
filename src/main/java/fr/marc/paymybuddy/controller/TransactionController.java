@@ -81,14 +81,13 @@ public class TransactionController {
 		
 		List<BuddyDTO> buddyList = connectionService.getBuddyList(id);
 		model.addAttribute("buddyList",buddyList);
-		log.debug("Buddy list = "+buddyList);
+		log.info("Buddy list = "+buddyList);
 		
 		List<ActivityDTO> transactions = transactionService.getTransactionsById(id);
 		model.addAttribute("transactions",transactions);
-		log.debug("Transactions list = "+transactions);
+		log.info("Transactions list = "+transactions);
 		
 		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
-		System.out.println(sendMoneyDTO.toString());
 		model.addAttribute("sendMoneyDTO",sendMoneyDTO);
 		
         return "transfer";
@@ -103,6 +102,41 @@ public class TransactionController {
 		sendMoneyDTO.setUserId(id);
 		transactionService.sendMoneyToBuddy(sendMoneyDTO);
 		return "redirect:/transfer?id="+id.toString();
+    }
+    
+	/*
+	 * Page "Account"
+	 * Display the user's balance
+	 * and a form to transfer money from the user's bank
+	 */
+    @GetMapping("/account")
+    public String displayAccountPageById(Model model,@RequestParam int id) {
+		log.info("GET request - endpoint /account - id = "+id);
+		
+		User user = userService.getUserById(id).get();
+		model.addAttribute("user",user);
+		
+		int balance = transactionService.getBalance(id);
+		model.addAttribute("balance",balance);
+		
+		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
+		model.addAttribute("sendMoneyDTO",sendMoneyDTO);
+		
+        return "account";
+    }
+	
+	/*
+	 * Page "Transfer", send operation
+	 */
+    @PostMapping(value = "/bankTransfer")
+    public String sendBankTransfer(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
+		sendMoneyDTO.setUserId(id);
+		sendMoneyDTO.setBuddyId(id);
+		log.info("POST request - endpoint /bankTransfer - body = "+sendMoneyDTO);
+		if (sendMoneyDTO.getAmount()>0) {
+			transactionService.receiveMoneyFromBank(sendMoneyDTO);
+		}
+		return "redirect:/account?id="+id.toString();
     }
     
 }

@@ -11,11 +11,11 @@
 <link rel="stylesheet" type="text/css" href="../static/style.css"
 	th:href="@{style.css}" />
 
-<title>Home</title>
+<title>Account</title>
 
 </head>
 <body class="mx-auto">
-	<div class="container border border-dark mx-auto">
+	<div class="container border border-dark mx-auto pb-4">
 
 		<!-- Banner -->
 		<div class="row align-items-center bg-dark">
@@ -26,9 +26,9 @@
 
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1 text-primary">Home</li>
+					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
 					<li class="mx-1"><a th:href="@{transfer(id=${user.id})}">Transfer</a></li>
-					<li class="mx-1"><a th:href="@{account(id=${user.id})}">Account</a></li>
+					<li class="mx-1 text-primary">Account</li>
 					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact(id=${user.id})}">Contact</a></li>
 					<li class="mx-1"><a th:href="@{/}">Log off</a></li>
@@ -36,15 +36,14 @@
 			</div>
 		</div>
 		<div class="bg-light">
-			<span class="mx-1">Home /</span>
+			<span class="mx-1">
+				<a th:href="@{home(id=${user.id})}">Home /</a>
+			</span>
+			<span class="mx-1">Account</span>
 		</div>
 
-		<!-- Welcome and Balance box -->
-		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto my-4">
-			<div class="col-4 fs-3 d-flex align-items-center">
-				<span class="me-2">Welcome</span>
-				<span th:text="${user.firstName}">First Name</span>
-			</div>
+		<!-- Balance box -->
+		<div class="row col-md-8 col-xs-12 mx-auto my-4">
 			<div class="col-4">
 				<p class="my-0">Balance</p>
 				<p class="fs-3 border border-secondary rounded mx-auto text-center">
@@ -54,38 +53,30 @@
 			</div>
 
 		</div>
-		
-		<!-- My activities table -->
-		<div class="row col-md-8 col-xs-12 mx-auto my-4">
-			<p class="fs-5 mb-0">My activities</p>
-			<table class="table table-striped border border-secondary text-center">
-				<thead>
-					<tr class="green_context">
-						<th></th>
-						<th>Connections</th>
-						<th>Date</th>
-						<th>Description</th>
-						<th>Amount</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="act:${activities}">
-						<td>
-							<img th:if="${act.arrow}" th:src="@{/images/arrow-right.png}" alt="Right arrow"/>
-							<img th:unless="${act.arrow}" th:src="@{/images/arrow-left.png}" alt="Right arrow"/>
-						</td>
-						<td th:text="${act.buddyName}">Buddy name</td>
-						<td th:text="${act.date}">Date</td>
-						<td th:text="${act.description}">Description</td>
-						<td>
-							<span th:text="${act.amount}">Amount</span>
-							<span>&#8364;</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		
+
+		<!-- Title box -->
+		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto mt-4">
+			<span class="fs-5">Transfer money from my bank</span>
 		</div>
+		
+		<!-- Transfer Money from Bank box -->
+		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
+			<form method="post" th:action="@{bankTransfer(id=${user.id})}" th:object="${sendMoneyDTO}">
+				<div class="row d-flex justify-content-around">
+					<div class="col-3">
+						<input type="number" th:field="*{amount}"/>
+					</div>
+					<div class="col-3">
+						<button type="submit" class="green_context text-white rounded w-100">Transfer</button>
+					</div>
+				</div>
+				<div class="row">
+					<input class="col-10 mx-auto mt-4" type="text" placeholder="Description" th:field="*{description}"/>
+				</div>
+			</form>
+		</div>
+		
+
 		
 	</div>
 

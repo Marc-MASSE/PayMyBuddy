@@ -1,6 +1,7 @@
 package fr.marc.paymybuddy.serviceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -161,8 +162,12 @@ public class UserServiceImplTest {
 				.iban("FR003")
 				.bank("Banque3")
 				.build();
+		//when(userRepository.save(any(User.class)))
+			//.thenReturn(new User());
 		assertThat(userService.getUserByEmail("user3@mail.fr").isEmpty());
+		System.out.println(userService.getUserByEmail("user3@mail.fr").toString());
 		userService.addUser(user3);
+		System.out.println(userService.getUserByEmail("user3@mail.fr").toString());
 		assertThat(userService.getUserByEmail("user3@mail.fr").isPresent());
 	}
 	

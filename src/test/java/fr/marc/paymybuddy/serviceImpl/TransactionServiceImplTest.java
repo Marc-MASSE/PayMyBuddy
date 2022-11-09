@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,8 +44,10 @@ public class TransactionServiceImplTest {
 	private Transaction transaction1;
 	private Transaction transaction2;
 	private Transaction transaction3;
+	private Transaction transaction1ToAdd;
 	private ActivityDTO activityDTO1;
 	private ActivityDTO activityDTO2;
+	private ActivityDTO activityDTO3;
 	
 	@BeforeEach
 	public void init() {
@@ -155,7 +158,6 @@ public class TransactionServiceImplTest {
 		}
 	}
 	
-	//TODO : getActivity
 	@Nested
 	class GetActivity{
 		@Test
@@ -170,12 +172,8 @@ public class TransactionServiceImplTest {
 			verify(userRepository).findById(1);
 			verify(transactionRepository).findAllByUserOrderByIdDesc(user1);
 		}
-		@Test
-		public void user_doesnt_exist() {
-		}
 	}
 	
-	//TODO : getActivityById
 	@Nested
 	class GetActivityById{
 		@Test
@@ -207,15 +205,78 @@ public class TransactionServiceImplTest {
 			verify(userRepository).findById(2);
 			verify(transactionRepository).findAllByUserOrderByIdDesc(user1);
 		}
-		@Test
-		public void user_doesnt_exist() {
-		}
 	}
 	
 	//TODO : getTransactionsById
+	@Nested
+	class GetTransactionsById{
+		@Test
+		public void success() {
+			activityDTO1 = ActivityDTO.builder()
+				.arrow(true)
+				.buddyName("Prénom1 Nom1")
+				.date(LocalDate.now().toString())
+				.description("Initial deposit")
+				.amount(100)
+				.build();
+			activityDTO2 = ActivityDTO.builder()
+				.arrow(true)
+				.buddyName("Prénom2 Nom2")
+				.date(LocalDate.now().toString())
+				.description("Gift")
+				.amount(55)
+				.build();
+			activityDTO3 = ActivityDTO.builder()
+				.arrow(false)
+				.buddyName("Prénom3 Nom3")
+				.date(LocalDate.now().toString())
+				.description("Repayment")
+				.amount(-35)
+				.build();
+			/*
+			when(userRepository.findById(1))
+				.thenReturn(Optional.of(user1));
+			when(userRepository.findById(2))
+				.thenReturn(Optional.of(user2));
+			when(transactionRepository.findAllByUserOrderByIdDesc(user1))
+				.thenReturn(Arrays.asList(transaction3,transaction2,transaction1));
+			
+			assertThat(transactionService.getTransactionsById(1))
+				.doesNotContain(activityDTO1)
+				.doesNotContain(activityDTO2)
+				.contains(activityDTO3);
+			verify(userRepository,times(2)).findById(1);
+			verify(userRepository).findById(2);
+			verify(transactionRepository).findAllByUserOrderByIdDesc(user1);
+			*/
+		}
+	}
 	
 	//TODO : addTransaction
+	@Test
+	public void addTransaction_success() {
+		transaction1ToAdd = Transaction.builder()
+			.transactionNumber(1)
+			.buddyId(1)
+			.description("Initial deposit")
+			.amount(100)
+			.date(LocalDate.now())
+			.done(false)
+			.build();
+		assertThat(transactionService.getTransactions())
+			.isEmpty();
+		System.out.println(transactionService.getTransactions().toString());
+		transactionService.addTransaction(transaction1ToAdd);
+		System.out.println(transactionService.getTransactions().toString());
+		assertThat(transactionService.getTransactions())
+			.contains(transaction1);
+	}
 	
-	//TODO : getNextTransactionNumber
+	@Test
+	public void getNextTransactionNumber_should_return_4() {
+		when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+			.thenReturn(transaction3);
+		assertThat(transactionService.getNextTransactionNumber()).isEqualTo(4);
+	}
 
 }

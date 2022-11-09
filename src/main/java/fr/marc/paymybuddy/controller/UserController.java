@@ -93,7 +93,7 @@ public class UserController {
 	 * If email and password matched redirect to Home page.
 	 */
     @PostMapping(value = "/loginRequest")
-    public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO, Model model) {
+    public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO) {
 		log.info("POST request - endpoint /loginRequest - body = "+loginDTO);
 		Integer userId = userService.verifyLogin(loginDTO);
 		log.info("user_id = "+userId);
