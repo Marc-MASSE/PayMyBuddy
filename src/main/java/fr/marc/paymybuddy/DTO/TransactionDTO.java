@@ -17,7 +17,7 @@ public class TransactionDTO {
 
 	private String description;
 
-	private int amount;
+	private Integer amount;
 
 	private LocalDate date;
 

@@ -1,5 +1,7 @@
 package fr.marc.paymybuddy.serviceImpl;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	
 	private IUserService userService;
 	
-	private int sum;
+	private BigDecimal sum;
 	
 	@Autowired
 	public TransactionServiceImpl(TransactionRepository transactionRepository,UserRepository userRepository,IUserService userService) {
@@ -62,7 +64,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		userTransaction.setTransactionNumber(getNextTransactionNumber());
 		userTransaction.setBuddyId(sendMoneyDTO.getBuddyId());
 		userTransaction.setDescription(sendMoneyDTO.getDescription());
-		userTransaction.setAmount(-sendMoneyDTO.getAmount());
+		userTransaction.setAmount("-"+sendMoneyDTO.getAmount().toString());
 		userTransaction.setDate(LocalDate.now());
 		userTransaction.setUser(userService.getUserById(sendMoneyDTO.getUserId()).get());
 		
@@ -71,7 +73,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		buddyTransaction.setTransactionNumber(getNextTransactionNumber());
 		buddyTransaction.setBuddyId(sendMoneyDTO.getUserId());
 		buddyTransaction.setDescription(sendMoneyDTO.getDescription());
-		buddyTransaction.setAmount(sendMoneyDTO.getAmount());
+		buddyTransaction.setAmount(sendMoneyDTO.getAmount().toString());
 		buddyTransaction.setDate(LocalDate.now());
 		buddyTransaction.setUser(userService.getUserById(sendMoneyDTO.getBuddyId()).get());
 		
@@ -90,7 +92,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		userTransaction.setTransactionNumber(getNextTransactionNumber());
 		userTransaction.setBuddyId(sendMoneyDTO.getUserId());
 		userTransaction.setDescription(sendMoneyDTO.getDescription());
-		userTransaction.setAmount(sendMoneyDTO.getAmount());
+		userTransaction.setAmount(sendMoneyDTO.getAmount().toString());
 		userTransaction.setDate(LocalDate.now());
 		userTransaction.setUser(userService.getUserById(sendMoneyDTO.getUserId()).get());
 		
@@ -100,16 +102,16 @@ public class TransactionServiceImpl implements ITransactionService {
 	/*
 	 * The balance is calculated as the sum of all transactions amounts for a user.
 	 */
-	public int getBalance(Integer id) {
+	public String getBalance(Integer id) {
 		List<Transaction> transactions = new ArrayList<>();
-		sum = 0;
+		sum = (new BigDecimal(0.00)).setScale(2,RoundingMode.HALF_EVEN);
 		try {
 			transactions = transactionRepository.findAllByUserOrderByIdDesc(userRepository.findById(id).get());
-			transactions.forEach(t -> sum += t.getAmount());
+			transactions.forEach(t -> sum = sum.add(new BigDecimal(t.getAmount())));
 		} catch (Exception e) {
 			log.warn("There is no user with id = "+id);
 		}
-		return sum;
+		return sum.toString();
 	}
 	
 	public List<Transaction> getActivity(Integer id) {
@@ -124,7 +126,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		activities.forEach(a -> {
 			ActivityDTO activityDTO = new ActivityDTO();
 			// arrow=true(right) if amount>=0, arrow= false(left) unless
-			activityDTO.setArrow(a.getAmount()>=0);
+			activityDTO.setArrow(new BigDecimal(a.getAmount()).compareTo(BigDecimal.ZERO)>0);
 			User buddy = userRepository.findById(a.getBuddyId()).get();
 			activityDTO.setBuddyName(buddy.getFirstName()+" "+buddy.getLastName());
 			activityDTO.setDate(a.getDate().toString());
@@ -143,10 +145,11 @@ public class TransactionServiceImpl implements ITransactionService {
 		List<ActivityDTO> transactions = new ArrayList<>();
 		List<ActivityDTO> activities = getActivityById(id);
 		activities.forEach(a -> {
-			if (a.getAmount()<0&&
+			BigDecimal amount = new BigDecimal(a.getAmount());
+			if (amount.compareTo(BigDecimal.ZERO)<0&&
 				!a.getBuddyName().contains(userService.getUserById(id).get().getFirstName())&&
 				!a.getBuddyName().contains(userService.getUserById(id).get().getLastName())) {
-				a.setAmount(-a.getAmount());
+				a.setAmount(amount.negate().toString());
 				transactions.add(a);
 			}
 		});

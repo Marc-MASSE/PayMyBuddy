@@ -45,7 +45,7 @@ public class Transaction {
 	private String description;
 
 	@Column(name = "amount")
-	private int amount;
+	private String amount;
 
 	@Column(name = "date")
 	private LocalDate date;

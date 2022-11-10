@@ -20,5 +20,5 @@ public class ActivityDTO {
 	
 	private String description;
 	
-	private int amount;
+	private String amount;
 }

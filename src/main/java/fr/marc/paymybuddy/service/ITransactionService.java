@@ -17,7 +17,7 @@ public interface ITransactionService {
 	
 	public void receiveMoneyFromBank (SendMoneyDTO sendMoneyDTO);
 	
-	public int getBalance(Integer id);
+	public String getBalance(Integer id);
 	
 	public List<Transaction> getActivity(Integer id);
 	

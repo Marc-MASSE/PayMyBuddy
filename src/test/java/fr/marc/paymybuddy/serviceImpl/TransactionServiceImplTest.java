@@ -77,7 +77,7 @@ public class TransactionServiceImplTest {
 				.transactionNumber(1)
 				.buddyId(1)
 				.description("Initial deposit")
-				.amount(100)
+				.amount("100")
 				.date(LocalDate.now())
 				.done(false)
 				.build();
@@ -86,7 +86,7 @@ public class TransactionServiceImplTest {
 				.transactionNumber(2)
 				.buddyId(2)
 				.description("Gift")
-				.amount(55)
+				.amount("55")
 				.date(LocalDate.now())
 				.done(false)
 				.build();
@@ -95,7 +95,7 @@ public class TransactionServiceImplTest {
 				.transactionNumber(3)
 				.buddyId(2)
 				.description("Repayment")
-				.amount(-35)
+				.amount("-35")
 				.date(LocalDate.now())
 				.done(false)
 				.build();
@@ -183,14 +183,14 @@ public class TransactionServiceImplTest {
 				.buddyName("Prénom1 Nom1")
 				.date(LocalDate.now().toString())
 				.description("Initial deposit")
-				.amount(100)
+				.amount("100")
 				.build();
 			activityDTO2 = ActivityDTO.builder()
 				.arrow(true)
 				.buddyName("Prénom2 Nom2")
 				.date(LocalDate.now().toString())
 				.description("Gift")
-				.amount(55)
+				.amount("55")
 				.build();
 			when(userRepository.findById(1))
 				.thenReturn(Optional.of(user1));
@@ -217,21 +217,21 @@ public class TransactionServiceImplTest {
 				.buddyName("Prénom1 Nom1")
 				.date(LocalDate.now().toString())
 				.description("Initial deposit")
-				.amount(100)
+				.amount("100")
 				.build();
 			activityDTO2 = ActivityDTO.builder()
 				.arrow(true)
 				.buddyName("Prénom2 Nom2")
 				.date(LocalDate.now().toString())
 				.description("Gift")
-				.amount(55)
+				.amount("55")
 				.build();
 			activityDTO3 = ActivityDTO.builder()
 				.arrow(false)
 				.buddyName("Prénom3 Nom3")
 				.date(LocalDate.now().toString())
 				.description("Repayment")
-				.amount(-35)
+				.amount("-35")
 				.build();
 			/*
 			when(userRepository.findById(1))
@@ -259,7 +259,7 @@ public class TransactionServiceImplTest {
 			.transactionNumber(1)
 			.buddyId(1)
 			.description("Initial deposit")
-			.amount(100)
+			.amount("100")
 			.date(LocalDate.now())
 			.done(false)
 			.build();

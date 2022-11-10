@@ -124,7 +124,7 @@ public class UserController {
 	
 	@ResponseBody
     @GetMapping("/balance")
-    public int getBalanceById(@RequestParam int id) {
+    public String getBalanceById(@RequestParam int id) {
 		log.info("GET request - endpoint /balance - id = "+id);
         return transactionService.getBalance(id);
     }
@@ -144,7 +144,7 @@ public class UserController {
 		log.info("GET request - endpoint /home - id = "+id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
-		int balance = transactionService.getBalance(id);
+		String balance = transactionService.getBalance(id);
 		model.addAttribute("balance",balance);
 		List<ActivityDTO> activities = transactionService.getActivityById(id);
 		model.addAttribute("activities",activities);

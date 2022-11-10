@@ -15,6 +15,6 @@ public class SendMoneyDTO {
 	
 	private String description;
 
-	private int amount;
+	private Integer amount;
 	
 }

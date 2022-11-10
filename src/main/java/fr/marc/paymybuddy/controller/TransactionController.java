@@ -116,7 +116,7 @@ public class TransactionController {
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
 		
-		int balance = transactionService.getBalance(id);
+		String balance = transactionService.getBalance(id);
 		model.addAttribute("balance",balance);
 		
 		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
