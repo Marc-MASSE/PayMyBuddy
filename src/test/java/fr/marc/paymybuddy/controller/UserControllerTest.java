@@ -2,6 +2,7 @@ package fr.marc.paymybuddy.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -107,10 +108,12 @@ public class UserControllerTest {
 	        		.contentType(MediaType.APPLICATION_JSON)
 	        		.content(mapper.writeValueAsString(loginDTO)))
 	        	//.sessionAttr("loginDTO",loginDTO)
-	        	//.param("loginDTO.email",loginDTO)
+	        	//.param("loginDTO.email","acall@mail.fr")
+	        	//.param("loginDTO.password","Excalibur")
+	        	//.with(csrf()))
 	            .andExpect(status().is(302))
 	            //.andExpect(model().attributeExists("loginDTO"))
-	            .andExpect(view().name("home"));
+	            .andExpect(view().name("home?id=1"));
 	    }
 	    
 	    @Test

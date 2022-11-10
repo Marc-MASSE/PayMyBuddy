@@ -58,8 +58,8 @@ public class ConnectionController {
 		model.addAttribute("buddyList",buddyList);
 		log.debug("Buddy list = "+buddyList);
 		
-		String buddyEmail = new String();
-		model.addAttribute("buddyEmail",buddyEmail);
+		BuddyDTO buddy = new BuddyDTO();
+		model.addAttribute("buddy",buddy);
 		
         return "buddies";
     }
@@ -68,10 +68,10 @@ public class ConnectionController {
 	 * Page "Buddies", add a buddy by Email
 	 */
     @PostMapping(value = "/addABuddy")
-    public String addABuddy(@ModelAttribute("buddies") String buddyEmail,@RequestParam Integer id) {
-		log.info("POST request - endpoint /addABuddy - buddyEmail = "+buddyEmail);
+    public String addABuddy(@ModelAttribute("buddies") BuddyDTO buddy,@RequestParam Integer id) {
+		log.info("POST request - endpoint /addABuddy - buddy's email = "+buddy.getEmail());
 		try {
-			connectionService.addANewBuddy(buddyEmail,id);
+			connectionService.addANewBuddy(buddy.getEmail(),id);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

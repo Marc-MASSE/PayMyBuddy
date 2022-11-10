@@ -63,6 +63,15 @@ public class UserController {
 		model.addAttribute(message);
         return "redirect:/login?message="+message;
     }
+    
+	/*
+	 * Page "Admin"
+	*/
+    @GetMapping("/admin")
+    public String admin() {
+		log.info("Redirect to Admin page");
+        return "admin";
+    }
 	
 	/*
 	 * Page "Profile"

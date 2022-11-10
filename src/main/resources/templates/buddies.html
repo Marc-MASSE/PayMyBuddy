@@ -51,10 +51,10 @@
 		</div>
 		
 		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{addABuddy(id=${user.id})}" th:object="${buddyEmail}">
+			<form method="post" th:action="@{addABuddy(id=${user.id})}" th:object="${buddy}">
 				<div class="row d-flex justify-content-around">
 					<div class="col-3">
-						<input type="email" placeholder="Email of a buddy" th:field="${buddyEmail}"/>
+						<input type="email" placeholder="Email of a buddy" th:field="*{email}"/>
 					</div>
 					<div class="col-3">
 						<button type="submit" class="green_context text-white rounded w-100">Add</button>

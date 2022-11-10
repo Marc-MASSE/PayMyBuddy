@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"/>
+<link rel="stylesheet" type="text/css" href="../static/style.css"
+	th:href="@{style.css}" />
+
+<title>Admin</title>
+
+</head>
+<body class="mx-auto">
+	<div class="container border border-dark mx-auto">
+
+		<!-- Banner -->
+		<div class="row align-items-center bg-dark">
+			<p class="text-center text-white my-2">Pay My Buddy</p>
+		</div>
+		<div class="row">
+			<div class="col-3 green_context rounded">Pay My Buddy</div>
+
+			<div class="col-9">
+				<ul class="nav justify-content-end">
+					<li class="mx-1"><a th:href="@{/}">Log off</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- Contact box -->
+		<div class="col-md-6 col-xs-12 mx-auto mt-4">
+			<p class="fs-5 mb-0">Administrator</p>
+		</div>
+		<div class="col-md-6 col-xs-12 border border-secondary rounded mx-auto mb-4">
+			<div><img class="w-100" th:src="@{/images/paymybuddy_big.png}" alt="Pay My Buddy image"/></div>	
+			<div class="green_context rounded mx-auto">User Management</div>
+		</div>
+		
+	</div>
+
+	<!-- Bootstrap JS bundle -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package fr.marc.paymybuddy.serviceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,9 @@ public class UserServiceImplTest {
 	private User user1;
 	private User user2;
 	private User user3;
+	
+	@Captor
+	ArgumentCaptor<User> userCaptor;
 	
 	@BeforeEach
 	public void init() {
@@ -162,13 +168,12 @@ public class UserServiceImplTest {
 				.iban("FR003")
 				.bank("Banque3")
 				.build();
-		//when(userRepository.save(any(User.class)))
-			//.thenReturn(new User());
-		assertThat(userService.getUserByEmail("user3@mail.fr").isEmpty());
-		System.out.println(userService.getUserByEmail("user3@mail.fr").toString());
+		when(userRepository.save(any(User.class)))
+			.thenReturn(user3);
 		userService.addUser(user3);
-		System.out.println(userService.getUserByEmail("user3@mail.fr").toString());
-		assertThat(userService.getUserByEmail("user3@mail.fr").isPresent());
+		//verify(userRepository).save(userCaptor.capture());
+		//assertThat(userCaptor.getValue()).isEqualTo(user3);
+		verify(userRepository).save(user3);
 	}
 	
 	@Test
