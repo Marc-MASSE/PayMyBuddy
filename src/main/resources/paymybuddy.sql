@@ -31,7 +31,8 @@ VALUES
 ('acall@mail.fr','Arthur','Call','Excalibur','FR00123456789','Camelot'),
 ('mking@mail.fr','Midas','King','Gold','FR00234567891','Phrygie Bank'),
 ('jpoor@mail.fr','Job','Poor','Nothing','FR00345678912','Sanzinron Bank'),
-('bpicsou@mail.fr','Balthazar','Picsou','Money','FR00456789123','Duck Bank');
+('bpicsou@mail.fr','Balthazar','Picsou','Money','FR00456789123','Duck Bank'),
+('admin@mail.fr','PayMyBuddy','','admin123','FR00','Bank');
 
 --
 -- Table structure for table `connection`
@@ -70,13 +71,13 @@ CREATE TABLE transaction (
 
 INSERT INTO transaction (user_id,buddy_id,transaction_number,description,amount,date,done)
 VALUES
-(1,1,1,'Initial deposit',"350",'2022-01-01',false),
-(2,2,2,'Initial deposit',"1500",'2022-01-01',false),
-(4,4,3,'Initial deposit',"900",'2022-01-01',false),
-(1,3,4,'Medical support',"-100",'2022-07-25',false),
-(3,1,4,'Medical support',"100",'2022-07-25',false),
-(2,3,5,'Medical support',"-250",'2022-08-21',false),
-(3,2,5,'Medical support',"250",'2022-08-21',false),
-(2,1,6,'Medical support',"-200",'2022-09-10',false),
-(1,2,6,'Medical support',"200",'2022-09-10',false);
+(1,1,1,'Initial deposit','350.00','2022-01-01',false),
+(2,2,2,'Initial deposit','1500.00','2022-01-01',false),
+(4,4,3,'Initial deposit','900.00','2022-01-01',false),
+(1,3,4,'Medical support','-100.00','2022-07-25',false),
+(3,1,4,'Medical support','100.00','2022-07-25',false),
+(2,3,5,'Medical support','-250.00','2022-08-21',false),
+(3,2,5,'Medical support','250.00','2022-08-21',false),
+(2,1,6,'Medical support','-200.00','2022-09-10',false),
+(1,2,6,'Medical support','200.00','2022-09-10',false);
 

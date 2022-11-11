@@ -56,18 +56,40 @@
 
 		<!-- Title box -->
 		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto mt-4">
-			<span class="fs-5">Transfer money from my bank</span>
+			<span class="fs-5">From my bank</span>
 		</div>
 		
 		<!-- Transfer Money from Bank box -->
 		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{bankTransfer(id=${user.id})}" th:object="${sendMoneyDTO}">
+			<form method="post" th:action="@{bankTransfer/receive(id=${user.id})}" th:object="${sendMoneyDTO}">
 				<div class="row d-flex justify-content-around">
 					<div class="col-3">
-						<input type="number" th:field="*{amount}"/>
+						<input type="number" placeholder="0" th:field="*{amount}"/>
 					</div>
 					<div class="col-3">
-						<button type="submit" class="green_context text-white rounded w-100">Transfer</button>
+						<button type="submit" class="green_context text-white rounded w-100">Receive</button>
+					</div>
+				</div>
+				<div class="row">
+					<input class="col-10 mx-auto mt-4" type="text" placeholder="Description" th:field="*{description}"/>
+				</div>
+			</form>
+		</div>
+		
+		<!-- Title box -->
+		<div class="row col-md-8 col-xs-12 d-flex justify-content-between mx-auto mt-4">
+			<span class="fs-5">To my bank</span>
+		</div>
+		
+		<!-- Transfer Money from Bank box -->
+		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
+			<form method="post" th:action="@{bankTransfer/send(id=${user.id})}" th:object="${sendMoneyDTO}">
+				<div class="row d-flex justify-content-around">
+					<div class="col-3">
+						<input type="number" placeholder="0" th:field="*{amount}"/>
+					</div>
+					<div class="col-3">
+						<button type="submit" class="green_context text-white rounded w-100">Send</button>
 					</div>
 				</div>
 				<div class="row">

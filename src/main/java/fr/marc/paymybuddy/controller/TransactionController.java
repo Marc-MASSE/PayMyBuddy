@@ -126,15 +126,29 @@ public class TransactionController {
     }
 	
 	/*
-	 * Page "Transfer", send operation
+	 * Page "Account", Receive money from Bank
 	 */
-    @PostMapping(value = "/bankTransfer")
-    public String sendBankTransfer(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
+    @PostMapping(value = "/bankTransfer/receive")
+    public String receiveFromBank(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
 		sendMoneyDTO.setUserId(id);
 		sendMoneyDTO.setBuddyId(id);
-		log.info("POST request - endpoint /bankTransfer - body = "+sendMoneyDTO);
+		log.info("POST request - endpoint /bankTransfer/receive - body = "+sendMoneyDTO);
 		if (sendMoneyDTO.getAmount()>0) {
 			transactionService.receiveMoneyFromBank(sendMoneyDTO);
+		}
+		return "redirect:/account?id="+id.toString();
+    }
+    
+	/*
+	 * Page "Account", Receive money from Bank
+	 */
+    @PostMapping(value = "/bankTransfer/send")
+    public String sendToBank(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
+		sendMoneyDTO.setUserId(id);
+		sendMoneyDTO.setBuddyId(id);
+		log.info("POST request - endpoint /bankTransfer/send - body = "+sendMoneyDTO);
+		if (sendMoneyDTO.getAmount()>0) {
+			transactionService.sendMoneyToBank(sendMoneyDTO);
 		}
 		return "redirect:/account?id="+id.toString();
     }

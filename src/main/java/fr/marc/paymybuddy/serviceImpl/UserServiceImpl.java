@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
 
 	
 	/*
-	 * If email unknown return 0.
+	 * If email unknown return -2.
 	 * If password doesn't match return -1.
 	 * If email and password matched return the user id.
 	 */
@@ -60,7 +60,7 @@ public class UserServiceImpl implements IUserService {
 				user_id = user.getId();
 			}
 		} catch (Exception e) {
-			user_id = 0;
+			user_id = -2;
 		}
 		return user_id;
 	}

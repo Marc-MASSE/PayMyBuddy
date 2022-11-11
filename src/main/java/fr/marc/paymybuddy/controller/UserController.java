@@ -97,7 +97,7 @@ public class UserController {
 	
 	/*
 	 * Page "Login", verify if email and password match
-	 * If user_id = 0 => message email unknown
+	 * If user_id = -2 => message email unknown
 	 * If user_id = -1 => message password doesn't match
 	 * If email and password matched redirect to Home page.
 	 */
@@ -108,7 +108,7 @@ public class UserController {
 		log.info("user_id = "+userId);
 		String message;
 		switch(userId) {
-		  case 0:
+		  case -2:
 			  message = "Your email isn't registed";
 			  log.info("Message = "+message);
 			  return "redirect:/login?message="+message;
