@@ -1,8 +1,10 @@
 package fr.marc.paymybuddy.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -11,13 +13,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -28,9 +35,32 @@ import fr.marc.paymybuddy.DTO.LoginDTO;
 public class UserControllerTest {
 	
 	@Autowired
+	private WebApplicationContext context;
+	
+	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private UserController userController;
+	
+	// For tests to pass through Spring Security
+	@BeforeEach
+    void setUp() {
+        this.mockMvc = MockMvcBuilders
+        		.webAppContextSetup(this.context)
+        		.apply(springSecurity())
+        		.build();
+        // For using @WithMockUser annotation
+        MockitoAnnotations.openMocks(this);
+	}
+	
+	@Test
+	void userController_is_correctely_called()throws Exception {
+	   assertThat(userController).isNotNull();
+	   }
 
 	@Test
+	@WithMockUser
     public void getUsers() throws Exception {
         mockMvc.perform(get("/users"))
             .andExpect(status().isOk())
@@ -41,6 +71,7 @@ public class UserControllerTest {
     }
 	
 	@Nested
+	@WithMockUser
 	class GetUserById {
 		@Test
 	    public void success() throws Exception {
@@ -58,15 +89,16 @@ public class UserControllerTest {
 	}
 	
     @Test
+	@WithMockUser
     public void testRootRederectToLoginPage() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().is(302))
             .andExpect(view().name("redirect:/login?message="))
-            //.andExpect(content().string(containsString("Password")))
             ;
     }
 	
     @Test
+	@WithMockUser
     public void testDisplayArthurProfilePage() throws Exception {
         mockMvc.perform(get("/profile?id=1"))
             .andExpect(status().isOk())
@@ -75,6 +107,7 @@ public class UserControllerTest {
     }
 	
 	@Nested
+	@WithMockUser
 	class TestDisplayLoginPage {
 	    @Test
 	    public void no_message() throws Exception {
@@ -94,6 +127,7 @@ public class UserControllerTest {
 	}
     
 	@Nested
+	@WithMockUser
 	class TestLoginRequest {
 	    @Test
 	    public void ArthurLogin() throws Exception {
@@ -128,12 +162,13 @@ public class UserControllerTest {
     
 	
 	@Nested
+	@WithMockUser
 	class GetBalance {
 		@Test
 	    public void success() throws Exception {
 	        mockMvc.perform(get("/balance?id=1"))
 	            .andExpect(status().isOk())
-	            .andExpect(jsonPath("$", is(450)));
+	            .andExpect(jsonPath("$", is(450.0)));
 	    }
 		
 		@Test

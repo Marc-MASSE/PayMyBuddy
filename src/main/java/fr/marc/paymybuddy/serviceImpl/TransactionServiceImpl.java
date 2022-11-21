@@ -31,22 +31,23 @@ public class TransactionServiceImpl implements ITransactionService {
 	
 	private UserRepository userRepository;
 	
-	private IUserService userService;
+	//private IUserService userService;
 	
 	private BigDecimal sum;
 	
 	@Autowired
-	public TransactionServiceImpl(TransactionRepository transactionRepository,UserRepository userRepository,IUserService userService) {
+	public TransactionServiceImpl(TransactionRepository transactionRepository,UserRepository userRepository) {
 		this.transactionRepository = transactionRepository;
 		this.userRepository = userRepository;
-		this.userService = userService;
 	}
 	
 	
+	@Override
 	public Iterable<Transaction> getTransactions(){
 		return transactionRepository.findAll();
 	}
 	
+	@Override
 	public Optional<Transaction> getTransactionById(Integer id) {
 		return transactionRepository.findById(id);
 	}
@@ -57,8 +58,9 @@ public class TransactionServiceImpl implements ITransactionService {
 	 * Buddy : transaction with positive amount
 	 * 
 	 */
+	@Override
 	public void sendMoneyToBuddy (SendMoneyDTO sendMoneyDTO) {
-		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
+		log.info("Send money from {} to {} pay = {}",sendMoneyDTO.getUserId(),sendMoneyDTO.getBuddyId(),sendMoneyDTO.getAmount());
 		
 		// User : transaction with negative amount
 		Transaction userTransaction = createSendingTransaction(sendMoneyDTO, BigDecimal.ONE);
@@ -81,8 +83,10 @@ public class TransactionServiceImpl implements ITransactionService {
 	 * User receive money from his bank => 1 transaction
 	 * User and Buddy are the same 
 	 */
+	@Override
     public void receiveMoneyFromBank (SendMoneyDTO sendMoneyDTO) {
 		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
+		//TODO : log.info("Send money from {} to {} pay = {}"+sendMoneyDTO.getAmount(),sendMoneyDTO.getUserId(),sendMoneyDTO.getBuddyId());
 		
 		Transaction userTransaction = createReceivingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
@@ -100,6 +104,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	 * User receive money from his bank => 1 transaction
 	 * User and Buddy are the same 
 	 */
+	@Override
     public void sendMoneyToBank (SendMoneyDTO sendMoneyDTO) {
 		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
 		
@@ -118,6 +123,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	/*
 	 * The balance is calculated as the sum of all transactions amounts for a user.
 	 */
+	@Override
 	public String getBalance(Integer id) {
 		List<Transaction> transactions = new ArrayList<>();
 		//sum = (new BigDecimal(0.00)).setScale(2,RoundingMode.HALF_EVEN);
@@ -131,11 +137,13 @@ public class TransactionServiceImpl implements ITransactionService {
 		return sum.toString();
 	}
 	
+	@Override
 	public List<Transaction> getActivity(Integer id) {
 		User user = userRepository.findById(id).get();
 		return transactionRepository.findAllByUserOrderByIdDesc(user);
 		}
 	
+	@Override
 	public List<ActivityDTO> getActivityById(Integer id) {
 		User user = userRepository.findById(id).get();
 		List<Transaction> activities = transactionRepository.findAllByUserOrderByIdDesc(user);
@@ -158,14 +166,15 @@ public class TransactionServiceImpl implements ITransactionService {
 	 * List of payments to buddies
 	 * A payment means that the amount is negative and the buddy isn't the user or PayMyBuddy
 	 */
+	@Override
 	public List<ActivityDTO> getTransactionsById(Integer id) {
 		List<ActivityDTO> transactions = new ArrayList<>();
 		List<ActivityDTO> activities = getActivityById(id);
 		activities.forEach(a -> {
 			BigDecimal BDAmount = new BigDecimal(a.getAmount());
 			if (BDAmount.compareTo(BigDecimal.ZERO)<0&&
-				!a.getBuddyName().contains(userService.getUserById(id).get().getFirstName())&&
-				!a.getBuddyName().contains(userService.getUserById(id).get().getLastName())&&
+				!a.getBuddyName().contains(userRepository.findById(id).get().getFirstName())&&
+				!a.getBuddyName().contains(userRepository.findById(id).get().getLastName())&&
 				!a.getBuddyName().contains("PayMyBuddy")) {
 				a.setAmount(BDAmount.negate().toString());
 				transactions.add(a);
@@ -174,6 +183,13 @@ public class TransactionServiceImpl implements ITransactionService {
 		return transactions;
 	}
 	
+	/*
+	 * Creates a sending transaction from a sendMoneyDTO.
+	 * The sender is the user, the receiver is the buddy, the amount is negative.
+	 * If it's a simple transaction, the amount is multiplied by 1.
+	 * If it's a commission, the amount is multiplied by 0,005.
+	 */
+	@Override
 	public Transaction createSendingTransaction(SendMoneyDTO sendMoneyDTO,BigDecimal multiplier) {
 		
 		BigDecimal BDAmount = new BigDecimal(sendMoneyDTO.getAmount()).setScale(2,RoundingMode.HALF_EVEN);
@@ -185,11 +201,18 @@ public class TransactionServiceImpl implements ITransactionService {
 		BigDecimal resultAmount = BDAmount.multiply(multiplier).setScale(2,RoundingMode.HALF_EVEN);
 		transaction.setAmount(resultAmount.negate().toString());
 		transaction.setDate(LocalDate.now());
-		transaction.setUser(userService.getUserById(sendMoneyDTO.getUserId()).get());
+		transaction.setUser(userRepository.findById(sendMoneyDTO.getUserId()).get());
 		
 		return transaction;
 	}
 	
+	/*
+	 * Creates a receiving transaction from a sendMoneyDTO.
+	 * The sender is the buddy, the receiver is the user, the amount is positive.
+	 * If it's a simple transaction, the amount is multiplied by 1.
+	 * If it's a commission, the amount is multiplied by 0,005.
+	 */
+	@Override
 	public Transaction createReceivingTransaction(SendMoneyDTO sendMoneyDTO,BigDecimal multiplier) {
 		
 		BigDecimal BDAmount = new BigDecimal(sendMoneyDTO.getAmount()).setScale(2,RoundingMode.HALF_EVEN);
@@ -201,20 +224,17 @@ public class TransactionServiceImpl implements ITransactionService {
 		BigDecimal resultAmount = BDAmount.multiply(multiplier).setScale(2,RoundingMode.HALF_EVEN);
 		transaction.setAmount(resultAmount.toString());
 		transaction.setDate(LocalDate.now());
-		transaction.setUser(userService.getUserById(sendMoneyDTO.getBuddyId()).get());
+		transaction.setUser(userRepository.findById(sendMoneyDTO.getBuddyId()).get());
 		
 		return transaction;
 	}
 	
-	
-	
-	
-	
-	
+	@Override
 	public Transaction addTransaction(Transaction transaction) {
 		return transactionRepository.save(transaction);
 	}
 	
+	@Override
 	public int getNextTransactionNumber() {
 		return transactionRepository.findFirstByOrderByTransactionNumberDesc().getTransactionNumber()+1;
 	}

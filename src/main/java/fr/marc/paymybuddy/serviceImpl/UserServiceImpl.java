@@ -34,14 +34,17 @@ public class UserServiceImpl implements IUserService {
 	}
 	
 	
+	@Override
 	public Iterable<User> getUsers(){
 		return userRepository.findAll();
 	}
 	
+	@Override
 	public Optional<User> getUserById(Integer id) {
 		return userRepository.findById(id);
 	}
 	
+	@Override
 	public Optional<User> getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
@@ -52,6 +55,7 @@ public class UserServiceImpl implements IUserService {
 	 * If password doesn't match return -1.
 	 * If email and password matched return the user id.
 	 */
+	@Override
 	public int verifyLogin(LoginDTO loginDTO) {
 		int user_id = -1;
 		try {
@@ -65,11 +69,12 @@ public class UserServiceImpl implements IUserService {
 		return user_id;
 	}
 	
-	
+	@Override
 	public User addUser(User user) {
 		return userRepository.save(user);
 	}
 	
+	@Override
 	public void deleteUser(Integer id) {
 		userRepository.deleteById(id);
 	}

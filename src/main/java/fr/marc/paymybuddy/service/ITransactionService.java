@@ -1,5 +1,6 @@
 package fr.marc.paymybuddy.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,10 @@ public interface ITransactionService {
 	public List<ActivityDTO> getActivityById(Integer id);
 	
 	public List<ActivityDTO> getTransactionsById(Integer id);
+	
+	public Transaction createSendingTransaction(SendMoneyDTO sendMoneyDTO,BigDecimal multiplier);
+	
+	public Transaction createReceivingTransaction(SendMoneyDTO sendMoneyDTO,BigDecimal multiplier);
 	
 	Transaction addTransaction(Transaction transaction);
 	

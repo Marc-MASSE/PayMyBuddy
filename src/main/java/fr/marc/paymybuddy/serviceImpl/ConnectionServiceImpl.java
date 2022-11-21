@@ -28,34 +28,33 @@ public class ConnectionServiceImpl implements IConnectionService {
 	private ConnectionRepository connectionRepository;
 	
 	@Autowired
-	public ConnectionServiceImpl(UserRepository userRepository,IUserService userService,ConnectionRepository connectionRepository) {
+	public ConnectionServiceImpl(UserRepository userRepository,ConnectionRepository connectionRepository) {
 		this.userRepository = userRepository;
-		this.userService = userService;
 		this.connectionRepository = connectionRepository;
 	}
 	
 	
+	@Override
 	public List<BuddyDTO> getBuddyList(Integer userId) {
 		User user = userRepository.findById(userId).get();
-		log.info("getBuddyList method for - id = "+userId);
+		log.info("getBuddyList method for - id = {}",userId);
 		List<Connection> buddies = connectionRepository.findAllByUser(user);
 		List<BuddyDTO> buddyList = new ArrayList<>();
 		buddies.forEach(b -> {
 			BuddyDTO buddy = new BuddyDTO();
 			buddy.setId(b.getBuddyId());
-			buddy.setBuddyName(userService.getUserById(b.getBuddyId()).get().getFirstName()+" "+userService.getUserById(b.getBuddyId()).get().getLastName());
-			buddy.setEmail(userService.getUserById(b.getBuddyId()).get().getEmail());
+			buddy.setBuddyName(userRepository.findById(b.getBuddyId()).get().getFirstName()+" "+userRepository.findById(b.getBuddyId()).get().getLastName());
+			buddy.setEmail(userRepository.findById(b.getBuddyId()).get().getEmail());
 			buddyList.add(buddy);
 		});
 		return buddyList;
 		}
 
-
+	
 	@Override
 	public Connection getConnectionByUserIdAndBuddyId(Integer userId, Integer buddyId) {
 		return connectionRepository.findByUserIdAndBuddyId(userId,buddyId);
 	}
-
 
 	@Override
 	public Connection addConnection(Connection connection) {
@@ -65,8 +64,8 @@ public class ConnectionServiceImpl implements IConnectionService {
 	@Override
 	public Connection addANewBuddy(String email, Integer UserId) {
 		Connection connection = new Connection();
-		connection.setUser(userService.getUserById(UserId).get());
-		connection.setBuddyId(userService.getUserByEmail(email).get().getId());
+		connection.setUser(userRepository.findById(UserId).get());
+		connection.setBuddyId(userRepository.findByEmail(email).get().getId());
 		
 		return connectionRepository.save(connection);
 	}

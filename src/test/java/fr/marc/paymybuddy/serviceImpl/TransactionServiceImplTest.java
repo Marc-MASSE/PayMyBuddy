@@ -1,10 +1,12 @@
 package fr.marc.paymybuddy.serviceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -14,10 +16,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.SendMoneyDTO;
+import fr.marc.paymybuddy.constants.Commission;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.TransactionRepository;
@@ -38,20 +44,25 @@ public class TransactionServiceImplTest {
 	
 	@Mock
 	private IUserService userService;
+	
+	@Captor
+	ArgumentCaptor<Transaction> userCaptor;
 
 	private User user1;
 	private User user2;
 	private Transaction transaction1;
 	private Transaction transaction2;
 	private Transaction transaction3;
+	private Transaction transaction;
 	private Transaction transaction1ToAdd;
 	private ActivityDTO activityDTO1;
 	private ActivityDTO activityDTO2;
 	private ActivityDTO activityDTO3;
+	private SendMoneyDTO sendMoneyDTO;
 	
 	@BeforeEach
 	public void init() {
-		transactionService = new TransactionServiceImpl(transactionRepository,userRepository,userService);
+		transactionService = new TransactionServiceImpl(transactionRepository,userRepository);
 		user1 = User.builder()
 				.id(1)
 				.email("user1@mail.fr")
@@ -117,8 +128,8 @@ public class TransactionServiceImplTest {
 		public void success() {
 			when(transactionRepository.findById(1))
 				.thenReturn(Optional.of(transaction1));
-			assertThat(transactionService.getTransactionById(1)
-				.equals(Optional.of(transaction1)));
+			assertThat(transactionService.getTransactionById(1))
+				.isEqualTo(Optional.of(transaction1));
 			verify(transactionRepository).findById(1);
 		}
 		@Test
@@ -132,8 +143,91 @@ public class TransactionServiceImplTest {
 	}
 	
 	//TODO : sendMoneyToBuddy
+	@Nested
+	class SendMoneyToBuddyTest {
+		@Test
+		public void simpleSending() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(2)
+				.description("Gift")
+				.amount(100)
+				.build();
+			Transaction userTransactionTest = new Transaction();
+			userTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(2)
+				.description("Gift")
+				.amount("-100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction buddyTransactionTest = new Transaction();
+			buddyTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("Gift")
+				.amount("100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user2)
+				.build();
+			Transaction sendCommissionTransactionTest = new Transaction();
+			sendCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(5) //TODO : refactored
+				.description("Gift")
+				.amount("-0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction receiveCommissionTransactionTest = new Transaction();
+			receiveCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("Gift")
+				.amount("0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user2) //TODO : refactored
+				.build();
+			
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userService.getUserById(1))
+				.thenReturn(Optional.of(user1));
+			when(userService.getUserById(2))
+				.thenReturn(Optional.of(user2));
+			when(userService.getUserById(5))
+				.thenReturn(Optional.of(user2));
+			
+			when(transactionRepository.save(userTransactionTest))
+				.thenReturn(userTransactionTest);
+			//when(transactionRepository.save(buddyTransactionTest))
+				//.thenReturn(buddyTransactionTest);
+			//when(transactionRepository.save(sendCommissionTransactionTest))
+				//.thenReturn(sendCommissionTransactionTest);
+			//when(transactionRepository.save(receiveCommissionTransactionTest))
+				//.thenReturn(receiveCommissionTransactionTest);
+			
+			transactionService.sendMoneyToBuddy(sendMoneyDTO);
+			
+			verify(transactionRepository,times(4)).save(userCaptor.capture());
+			assertThat(userCaptor.getValue()).isEqualTo(userTransactionTest);
+			//assertThat(userCaptor.getValue()).isEqualTo(buddyTransactionTest);
+			//assertThat(userCaptor.getValue()).isEqualTo(sendCommissionTransactionTest);
+			//assertThat(userCaptor.getValue()).isEqualTo(receiveCommissionTransactionTest);
+			
+		
+		}
+	}	
+	
 	
 	//TODO : receiveMoneyFromBank
+	
+	//TODO : sendMoneyFromBank
 	
 	@Nested
 	class GetBalance{
@@ -144,7 +238,7 @@ public class TransactionServiceImplTest {
 			when(transactionRepository.findAllByUserOrderByIdDesc(user1))
 				.thenReturn(Arrays.asList(transaction3,transaction2,transaction1));
 			assertThat(transactionService.getBalance(1))
-				.isEqualTo(120);
+				.isEqualTo("120");
 			verify(userRepository).findById(1);
 			verify(transactionRepository).findAllByUserOrderByIdDesc(user1);
 		}
@@ -153,7 +247,7 @@ public class TransactionServiceImplTest {
 			when(userRepository.findById(1))
 				.thenReturn(null);
 			assertThat(transactionService.getBalance(1))
-				.isEqualTo(0);
+				.isEqualTo("0");
 		verify(userRepository).findById(1);
 		}
 	}
@@ -228,31 +322,146 @@ public class TransactionServiceImplTest {
 				.build();
 			activityDTO3 = ActivityDTO.builder()
 				.arrow(false)
-				.buddyName("Prénom3 Nom3")
+				.buddyName("Prénom2 Nom2")
 				.date(LocalDate.now().toString())
 				.description("Repayment")
-				.amount("-35")
+				.amount("35")
 				.build();
-			/*
+			
 			when(userRepository.findById(1))
 				.thenReturn(Optional.of(user1));
 			when(userRepository.findById(2))
 				.thenReturn(Optional.of(user2));
 			when(transactionRepository.findAllByUserOrderByIdDesc(user1))
 				.thenReturn(Arrays.asList(transaction3,transaction2,transaction1));
-			
+			System.out.println(transactionService.getTransactionsById(1));
 			assertThat(transactionService.getTransactionsById(1))
 				.doesNotContain(activityDTO1)
 				.doesNotContain(activityDTO2)
 				.contains(activityDTO3);
-			verify(userRepository,times(2)).findById(1);
-			verify(userRepository).findById(2);
-			verify(transactionRepository).findAllByUserOrderByIdDesc(user1);
-			*/
+			verify(userRepository,times(8)).findById(1);
+			verify(userRepository,times(4)).findById(2);
+			verify(transactionRepository,times(2)).findAllByUserOrderByIdDesc(user1);
 		}
 	}
 	
-	//TODO : addTransaction
+	@Nested
+	class CreateSendingTransactionTest{
+		
+		@Test
+		public void simpleSending() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(2)
+				.description("Gift")
+				.amount(100)
+				.build();
+			transaction = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(2)
+				.description("Gift")
+				.amount("-100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(1))
+				.thenReturn(Optional.of(user1));
+			assertThat(transactionService.createSendingTransaction(sendMoneyDTO,BigDecimal.ONE))
+				.isEqualTo(transaction);
+			verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository).findById(1);
+		}
+		
+		@Test
+		public void commissionSending() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(2)
+				.description("Gift")
+				.amount(100)
+				.build();
+			transaction = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(2)
+				.description("Gift")
+				.amount("-0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(1))
+				.thenReturn(Optional.of(user1));
+			assertThat(transactionService.createSendingTransaction(sendMoneyDTO,Commission.AMOUNT))
+				.isEqualTo(transaction);
+			verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository).findById(1);
+		}
+	}
+	
+	@Nested
+	class CreateReceivingingTransactionTest{
+		
+		@Test
+		public void simpleReceiving() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(2)
+				.description("Gift")
+				.amount(100)
+				.build();
+			transaction = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("Gift")
+				.amount("100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user2)
+				.build();
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(2))
+				.thenReturn(Optional.of(user2));
+			assertThat(transactionService.createReceivingTransaction(sendMoneyDTO,BigDecimal.ONE))
+				.isEqualTo(transaction);
+			verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository).findById(2);
+		}
+		
+		@Test
+		public void commissionReceiving() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(2)
+				.description("Gift")
+				.amount(100)
+				.build();
+			transaction = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("Gift")
+				.amount("0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user2)
+				.build();
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(2))
+				.thenReturn(Optional.of(user2));
+			assertThat(transactionService.createReceivingTransaction(sendMoneyDTO,Commission.AMOUNT))
+				.isEqualTo(transaction);
+			verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository).findById(2);
+		}
+	}
+	
+	
 	@Test
 	public void addTransaction_success() {
 		transaction1ToAdd = Transaction.builder()
@@ -263,13 +472,12 @@ public class TransactionServiceImplTest {
 			.date(LocalDate.now())
 			.done(false)
 			.build();
-		assertThat(transactionService.getTransactions())
-			.isEmpty();
-		System.out.println(transactionService.getTransactions().toString());
+		when(transactionRepository.save(any(Transaction.class)))
+			.thenReturn(transaction1ToAdd);
 		transactionService.addTransaction(transaction1ToAdd);
-		System.out.println(transactionService.getTransactions().toString());
-		assertThat(transactionService.getTransactions())
-			.contains(transaction1);
+		verify(transactionRepository).save(userCaptor.capture());
+		assertThat(userCaptor.getValue()).isEqualTo(transaction1ToAdd);
+		
 	}
 	
 	@Test
@@ -277,6 +485,7 @@ public class TransactionServiceImplTest {
 		when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
 			.thenReturn(transaction3);
 		assertThat(transactionService.getNextTransactionNumber()).isEqualTo(4);
+		verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
 	}
 
 }

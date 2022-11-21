@@ -44,6 +44,8 @@ public class UserServiceImplTest {
 	
 	@Captor
 	ArgumentCaptor<User> userCaptor;
+	@Captor
+	ArgumentCaptor<Integer> idCaptor;
 	
 	@BeforeEach
 	public void init() {
@@ -152,7 +154,7 @@ public class UserServiceImplTest {
 			when(userRepository.findByEmail("user1@mail.fr"))
 				.thenReturn(Optional.of(user1));
 			assertThat(userService.verifyLogin(loginDTO))
-				.isEqualTo(0);
+				.isEqualTo(-2);
 			verify(userRepository).findByEmail("unknown@mail.fr");
 		}
 	}
@@ -171,17 +173,17 @@ public class UserServiceImplTest {
 		when(userRepository.save(any(User.class)))
 			.thenReturn(user3);
 		userService.addUser(user3);
-		//verify(userRepository).save(userCaptor.capture());
-		//assertThat(userCaptor.getValue()).isEqualTo(user3);
+		verify(userRepository).save(userCaptor.capture());
+		assertThat(userCaptor.getValue()).isEqualTo(user3);
 		verify(userRepository).save(user3);
 	}
 	
 	@Test
 	public void deleteUser_success() {
-		userService.addUser(user1);
-		assertThat(userService.getUserByEmail("user1@mail.fr").isPresent());
 		userService.deleteUser(1);
-		assertThat(userService.getUserByEmail("user1@mail.fr").isEmpty());
+		verify(userRepository).deleteById(idCaptor.capture());
+		assertThat(idCaptor.getValue()).isEqualTo(1);
+		verify(userRepository).deleteById(1);
 	}
 
 }
