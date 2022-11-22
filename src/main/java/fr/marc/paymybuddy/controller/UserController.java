@@ -49,7 +49,7 @@ public class UserController {
 	@ResponseBody
     @GetMapping("/user")
     public Optional<User> getUserById(@RequestParam int id) {
-		log.info("GET request - endpoint /user - id = "+id);
+		log.info("GET request - endpoint /user - id = {}",id);
         return userService.getUserById(id);
     }
 	
@@ -78,7 +78,7 @@ public class UserController {
 	*/
     @GetMapping("/profile")
     public String displayProfileById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /profile - id = "+id);
+		log.info("GET request - endpoint /profile - id = {}",id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
         return "profile";
@@ -103,18 +103,18 @@ public class UserController {
 	 */
     @PostMapping(value = "/loginRequest")
     public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO) {
-		log.info("POST request - endpoint /loginRequest - body = "+loginDTO);
+		log.info("POST request - endpoint /loginRequest - body = {}",loginDTO);
 		Integer userId = userService.verifyLogin(loginDTO);
-		log.info("user_id = "+userId);
+		log.info("user_id = {}",userId);
 		String message;
 		switch(userId) {
 		  case -2:
 			  message = "Your email isn't registed";
-			  log.info("Message = "+message);
+			  log.info("Message = {}",message);
 			  return "redirect:/login?message="+message;
 		  case -1:
 			  message = "The password doesn't match with your email";
-			  log.info("Message = "+message);
+			  log.info("Message = {}",message);
 			  return "redirect:/login?message="+message;
 		  default:
 			  return "redirect:/home?id="+userId.toString();
@@ -125,14 +125,14 @@ public class UserController {
 	@ResponseBody
     @GetMapping("/balance")
     public String getBalanceById(@RequestParam int id) {
-		log.info("GET request - endpoint /balance - id = "+id);
+		log.info("GET request - endpoint /balance - id = {}",id);
         return transactionService.getBalance(id);
     }
     
 	@ResponseBody
     @GetMapping("/activity")
     public List<ActivityDTO> getActivityById(@RequestParam int id) {
-		log.info("GET request - endpoint /activity - id = "+id);
+		log.info("GET request - endpoint /activity - id = {}",id);
         return transactionService.getActivityById(id);
     }
 	
@@ -141,7 +141,7 @@ public class UserController {
 	*/
     @GetMapping("/home")
     public String displayHomePageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /home - id = "+id);
+		log.info("GET request - endpoint /home - id = {}",id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
 		String balance = transactionService.getBalance(id);
@@ -156,7 +156,7 @@ public class UserController {
 	*/
     @GetMapping("/contact")
     public String displayContactPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /contact - id = "+id);
+		log.info("GET request - endpoint /contact - id = {}",id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
         return "contact";
@@ -167,7 +167,7 @@ public class UserController {
 	*/
     @GetMapping("/modify")
     public String displayModifyPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /modify - id = "+id);
+		log.info("GET request - endpoint /modify - id = {}",id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
         return "modify";
@@ -176,7 +176,7 @@ public class UserController {
 	@ResponseBody
     @PostMapping(value = "/user")
     public User addUser(@RequestBody User user) {
-		log.info("POST request - endpoint /user - body = "+user);
+		log.info("POST request - endpoint /user - body = {}",user);
     	return userService.addUser(user);
     }
 	
@@ -186,22 +186,24 @@ public class UserController {
     @PostMapping(value = "/saveUser")
     public String saveUser(@ModelAttribute("modify") User user,@RequestParam Integer id) {
     	user.setId(id);
-		log.info("POST request - endpoint /user - body = "+user);
+		log.info("POST request - endpoint /saveUser - body = {}",user);
 		userService.addUser(user);
     	return "redirect:/profile?id="+id.toString();
     }
     
+    /*
 	@ResponseBody
     @PutMapping(value = "/user")
     public User updateUser(@RequestBody User user) {
-		log.info("PUT request - endpoint /user - body = "+user);
+		log.info("PUT request - endpoint /user - body = {}",user);
     	return userService.addUser(user);
     }
+	*/
     
 	@ResponseBody
     @DeleteMapping("/user")
     public void deletePersonByParam(@RequestParam int id) {
-		log.info("DELETE request - endpoint /user - id = "+id);
+		log.info("DELETE request - endpoint /user - id = {}",id);
         userService.deleteUser(id);
     }
     

@@ -205,20 +205,20 @@ public class TransactionServiceImplTest {
 			
 			when(transactionRepository.save(userTransactionTest))
 				.thenReturn(userTransactionTest);
-			//when(transactionRepository.save(buddyTransactionTest))
-				//.thenReturn(buddyTransactionTest);
-			//when(transactionRepository.save(sendCommissionTransactionTest))
-				//.thenReturn(sendCommissionTransactionTest);
-			//when(transactionRepository.save(receiveCommissionTransactionTest))
-				//.thenReturn(receiveCommissionTransactionTest);
+			when(transactionRepository.save(buddyTransactionTest))
+				.thenReturn(buddyTransactionTest);
+			when(transactionRepository.save(sendCommissionTransactionTest))
+				.thenReturn(sendCommissionTransactionTest);
+			when(transactionRepository.save(receiveCommissionTransactionTest))
+				.thenReturn(receiveCommissionTransactionTest);
 			
 			transactionService.sendMoneyToBuddy(sendMoneyDTO);
 			
 			verify(transactionRepository,times(4)).save(userCaptor.capture());
 			assertThat(userCaptor.getValue()).isEqualTo(userTransactionTest);
-			//assertThat(userCaptor.getValue()).isEqualTo(buddyTransactionTest);
-			//assertThat(userCaptor.getValue()).isEqualTo(sendCommissionTransactionTest);
-			//assertThat(userCaptor.getValue()).isEqualTo(receiveCommissionTransactionTest);
+			assertThat(userCaptor.getValue()).isEqualTo(buddyTransactionTest);
+			assertThat(userCaptor.getValue()).isEqualTo(sendCommissionTransactionTest);
+			assertThat(userCaptor.getValue()).isEqualTo(receiveCommissionTransactionTest);
 			
 		
 		}
