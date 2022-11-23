@@ -487,5 +487,24 @@ public class TransactionServiceImplTest {
 		assertThat(transactionService.getNextTransactionNumber()).isEqualTo(4);
 		verify(transactionRepository).findFirstByOrderByTransactionNumberDesc();
 	}
+	
+	@Nested
+	class ProjectedBalanceTest{
+		
+		@Test
+		public void positive_amount() {
+			assertThat(transactionService.getProjectedBalance("200.00", "100.00"))
+				.isEqualTo("299.50");
+		}
+		
+		@Test
+		public void negative_amount() {
+			assertThat(transactionService.getProjectedBalance("200.00", "-100.00"))
+				.isEqualTo("99.50");
+		}
+	}
+	
+	//TODO : convertToSendMoney
+	
 
 }

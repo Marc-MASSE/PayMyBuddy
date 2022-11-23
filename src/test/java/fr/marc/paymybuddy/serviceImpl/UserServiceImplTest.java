@@ -185,5 +185,14 @@ public class UserServiceImplTest {
 		assertThat(idCaptor.getValue()).isEqualTo(1);
 		verify(userRepository).deleteById(1);
 	}
+	
+	@Test
+	public void get_user1_complete_name() {
+		when(userRepository.findById(1))
+			.thenReturn(Optional.of(user1));
+		assertThat(userService.getCompleteName(1))
+			.isEqualTo("Prénom1 Nom1");
+		verify(userRepository).findById(1);
+	}
 
 }

@@ -17,4 +17,6 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
 	
 	public List<Transaction> findAllByTransactionNumber(Integer transaction_number);
 
+	public void deleteAllByTransactionNumber(int id);
+	
 }

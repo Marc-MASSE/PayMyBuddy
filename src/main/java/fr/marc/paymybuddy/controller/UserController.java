@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BankOrderDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.service.ITransactionService;
@@ -148,6 +149,8 @@ public class UserController {
 		model.addAttribute("balance",balance);
 		List<ActivityDTO> activities = transactionService.getActivityById(id);
 		model.addAttribute("activities",activities);
+		BankOrderDTO bankOrderDTO = new BankOrderDTO();
+		model.addAttribute("bankOrderDTO",bankOrderDTO);
         return "home";
     }
 	

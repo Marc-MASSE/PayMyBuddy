@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import fr.marc.paymybuddy.repository.TransactionRepository;
+import fr.marc.paymybuddy.service.ITransactionService;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TransactionControllerTest {
@@ -34,6 +38,9 @@ public class TransactionControllerTest {
 	
 	@Autowired
 	private TransactionController transactionController;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
 	
 	// For tests to pass through Spring Security
 	@BeforeEach
@@ -100,15 +107,30 @@ public class TransactionControllerTest {
     }
 	
 	//TODO : End point "/sendOperation"
+    @Test
+	@WithMockUser
+    public void sendAnOperation() throws Exception {
+        mockMvc.perform(post("/sendOperation?id=1&&amount=100&&buddyId=3")
+        		.param("description", "Gift"))
+            .andExpect(status().is(302))
+            .andExpect(view().name("redirect:/transfer?id=1"));
+        assertThat(transactionRepository.findById(10).get().getAmount()).isEqualTo("-100.00");
+        assertThat(transactionRepository.findById(11).get().getAmount()).isEqualTo("100.00");
+        assertThat(transactionRepository.findById(12).get().getAmount()).isEqualTo("-0.50");
+        assertThat(transactionRepository.findById(13).get().getAmount()).isEqualTo("0.50");
+        transactionRepository.deleteById(10);
+        transactionRepository.deleteById(11);
+        transactionRepository.deleteById(12);
+        transactionRepository.deleteById(13);
+    }
+    
+    //TODO : End point "/confirmation"
 	
 	
-	//TODO : End point "/account"
+	//TODO : End point "/bankOrder"
 	
 	
-	//TODO : End point "/bankTransfer/receive"
-	
-	
-	//TODO : End point "/bankTransfer/send"
+	//TODO : End point "/bankOperation"
 	
 	
 

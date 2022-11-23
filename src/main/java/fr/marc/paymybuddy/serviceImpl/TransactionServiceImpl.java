@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BankOrderDTO;
 import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.constants.Commission;
+import fr.marc.paymybuddy.constants.Treasurer;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.TransactionRepository;
@@ -69,7 +71,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		Transaction buddyTransaction = createReceivingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
 		// PayMyBuddy : commission 0.5% deducted from user's account
-		sendMoneyDTO.setBuddyId(5); // PayMyBuddy id = 5
+		sendMoneyDTO.setBuddyId(userRepository.findByEmail(Treasurer.EMAIL).get().getId());
 		Transaction sendCommissionTransaction = createSendingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		Transaction receiveCommissionTransaction = createReceivingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		
@@ -91,7 +93,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		Transaction userTransaction = createReceivingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
 		// PayMyBuddy : commission 0.5% deducted from user's account
-		sendMoneyDTO.setBuddyId(5); //PayMyBuddy id = 5
+		sendMoneyDTO.setBuddyId(userRepository.findByEmail(Treasurer.EMAIL).get().getId());
 		Transaction sendCommissionTransaction = createSendingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		Transaction receiveCommissionTransaction = createReceivingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		
@@ -111,7 +113,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		Transaction userTransaction = createSendingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
 		// PayMyBuddy : commission 0.5% deducted from user's account
-		sendMoneyDTO.setBuddyId(5); //PayMyBuddy id = 5
+		sendMoneyDTO.setBuddyId(userRepository.findByEmail(Treasurer.EMAIL).get().getId());
 		Transaction sendCommissionTransaction = createSendingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		Transaction receiveCommissionTransaction = createReceivingTransaction(sendMoneyDTO, Commission.AMOUNT);
 		
@@ -238,5 +240,26 @@ public class TransactionServiceImpl implements ITransactionService {
 	public int getNextTransactionNumber() {
 		return transactionRepository.findFirstByOrderByTransactionNumberDesc().getTransactionNumber()+1;
 	}
-
+	
+	@Override
+	public String getProjectedBalance(String balance, String amount) {
+		BigDecimal projectedBalance = (new BigDecimal(balance)).setScale(2,RoundingMode.HALF_EVEN);
+		BigDecimal BDAmount = (new BigDecimal(amount)).setScale(2,RoundingMode.HALF_EVEN);
+		BigDecimal commission = BDAmount.multiply(Commission.AMOUNT).setScale(2,RoundingMode.HALF_EVEN);
+		projectedBalance = projectedBalance.add(BDAmount).subtract(commission.abs());
+		return projectedBalance.toString();
+	}
+	
+	@Override
+	public SendMoneyDTO convertToSendMoney (BankOrderDTO bankOrderDTO) {
+		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
+		sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(bankOrderDTO.getUserId())
+				.buddyId(bankOrderDTO.getUserId())
+				.amount(bankOrderDTO.getAmount()*bankOrderDTO.getOperationType())
+				.description("Bank Order")
+				.build();
+		return sendMoneyDTO;
+	}
+	
 }

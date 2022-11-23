@@ -18,4 +18,6 @@ public interface IUserService {
 	User addUser(User user);
 	
 	void deleteUser(Integer id);
+
+	String getCompleteName(Integer id);
 }

@@ -3,6 +3,8 @@ package fr.marc.paymybuddy.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.criteria.CriteriaBuilder.Case;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
+import fr.marc.paymybuddy.DTO.BankOrderDTO;
 import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.model.Transaction;
@@ -97,18 +100,45 @@ public class TransactionController {
 	 * Page "Transfer", send operation
 	 */
     @PostMapping(value = "/sendOperation")
-    public String sendOperation(@ModelAttribute("transfer") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
+    public String sendOperation(@ModelAttribute("confirmation") SendMoneyDTO sendMoneyDTO,
+    		@RequestParam Integer id,
+    		@RequestParam Integer amount,
+    		@RequestParam Integer buddyId) {
 		log.info("POST request - endpoint /sendOperation - body = "+sendMoneyDTO);
 		sendMoneyDTO.setUserId(id);
+		sendMoneyDTO.setAmount(amount);
+		sendMoneyDTO.setBuddyId(buddyId);
 		transactionService.sendMoneyToBuddy(sendMoneyDTO);
 		return "redirect:/transfer?id="+id.toString();
+    }
+    
+	/*
+	 * Page "Confirmation"
+	 * To confirm Send Money to buddy operation
+	 */
+    @PostMapping(value = "/confirmation")
+    public String displayConfirmationPageById(Model model,SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
+		log.info("POST request - endpoint /confirmation - body = {}",sendMoneyDTO);
+		// buddyId=0 means no buddy selected
+		if (sendMoneyDTO.getBuddyId()==0) {
+			return "redirect:/transfer?id="+id.toString();
+		}else {
+			model.addAttribute("user",userService.getUserById(id).get());
+			sendMoneyDTO.setUserId(id);
+			model.addAttribute("sendMoneyDTO",sendMoneyDTO);
+			model.addAttribute("buddyName",userService.getCompleteName(sendMoneyDTO.getBuddyId()));
+			Integer amount = Math.negateExact(sendMoneyDTO.getAmount());
+			String projectedBalance = transactionService.getProjectedBalance(transactionService.getBalance(id),amount.toString());
+			model.addAttribute("projectedBalance",projectedBalance);
+			return "confirmation";
+		}
     }
     
 	/*
 	 * Page "Account"
 	 * Display the user's balance
 	 * and a form to transfer money from the user's bank
-	 */
+	 *
     @GetMapping("/account")
     public String displayAccountPageById(Model model,@RequestParam int id) {
 		log.info("GET request - endpoint /account - id = "+id);
@@ -124,10 +154,11 @@ public class TransactionController {
 		
         return "account";
     }
-	
+    */
+    
 	/*
 	 * Page "Account", Receive money from Bank
-	 */
+	 *
     @PostMapping(value = "/bankTransfer/receive")
     public String receiveFromBank(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
 		sendMoneyDTO.setUserId(id);
@@ -138,10 +169,11 @@ public class TransactionController {
 		}
 		return "redirect:/account?id="+id.toString();
     }
+    */
     
 	/*
 	 * Page "Account", Receive money from Bank
-	 */
+	 *
     @PostMapping(value = "/bankTransfer/send")
     public String sendToBank(@ModelAttribute("account") SendMoneyDTO sendMoneyDTO,@RequestParam Integer id) {
 		sendMoneyDTO.setUserId(id);
@@ -152,5 +184,59 @@ public class TransactionController {
 		}
 		return "redirect:/account?id="+id.toString();
     }
+    */
+    
+	/*
+	 * Page "bankorder"
+	 * To confirm bank order operation
+	 */
+    @PostMapping(value = "/bankOrder")
+    public String displayBankOrderPageById(Model model,BankOrderDTO bankOrderDTO,@RequestParam Integer id) {
+		log.info("POST request - endpoint /confirmation - body = {}",bankOrderDTO);
+		// buddyId=0 means no buddy selected
+		if (bankOrderDTO.getOperationType()==0) {
+			return "redirect:/home?id="+id.toString();
+		}else {
+			model.addAttribute("user",userService.getUserById(id).get());
+			
+			SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
+			model.addAttribute("sendMoneyDTO",sendMoneyDTO);
+			
+			bankOrderDTO.setUserId(id);
+			model.addAttribute("bankOrderDTO",bankOrderDTO);
+			
+			Integer amount =bankOrderDTO.getAmount()*bankOrderDTO.getOperationType();
+			String projectedBalance = transactionService.getProjectedBalance(transactionService.getBalance(id),amount.toString());
+			model.addAttribute("projectedBalance",projectedBalance);
+			
+			return "bankorder";
+		}
+		
+    }
+    
+	/*
+	 * Page "Account", Receive money from Bank
+	 */
+    @PostMapping(value = "/bankOperation")
+    public String bankOperation(@ModelAttribute("bankorder") SendMoneyDTO sendMoneyDTO,
+    		@RequestParam Integer id,
+    		@RequestParam Integer amount,
+    		@RequestParam Integer operationType) {
+		log.info("POST request - endpoint /bankOperation - body = "+sendMoneyDTO);
+		sendMoneyDTO.setUserId(id);
+		sendMoneyDTO.setAmount(amount);
+		sendMoneyDTO.setBuddyId(id);
+		
+		switch(operationType) {
+		  case -1:
+			  transactionService.sendMoneyToBank(sendMoneyDTO);
+			  break;
+		  case 1:
+			  transactionService.receiveMoneyFromBank(sendMoneyDTO);
+			  break;
+		}
+		return "redirect:/home?id="+id.toString();
+    }
+    
     
 }

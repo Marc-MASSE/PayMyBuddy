@@ -78,5 +78,11 @@ public class UserServiceImpl implements IUserService {
 	public void deleteUser(Integer id) {
 		userRepository.deleteById(id);
 	}
-
+	
+	@Override
+	public String getCompleteName(Integer id) {
+		Optional<User> user = userRepository.findById(id);
+		return user.get().getFirstName()+" "+user.get().getLastName();
+	}
+	
 }
