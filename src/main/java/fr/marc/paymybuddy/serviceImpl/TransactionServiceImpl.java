@@ -203,7 +203,8 @@ public class TransactionServiceImpl implements ITransactionService {
 		BigDecimal resultAmount = BDAmount.multiply(multiplier).setScale(2,RoundingMode.HALF_EVEN);
 		transaction.setAmount(resultAmount.negate().toString());
 		transaction.setDate(LocalDate.now());
-		transaction.setUser(userRepository.findById(sendMoneyDTO.getUserId()).get());
+		User user = userRepository.findById(sendMoneyDTO.getUserId()).get();
+		transaction.setUser(user);
 		
 		return transaction;
 	}

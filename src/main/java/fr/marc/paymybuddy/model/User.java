@@ -50,5 +50,8 @@ public class User {
 
 	@Column(name = "bank")
 	private String bank;
+	
+	@Column(name = "role")
+	private String role;
 
 }

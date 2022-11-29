@@ -1,7 +1,9 @@
 package fr.marc.paymybuddy.serviceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import fr.marc.paymybuddy.DTO.ActivityDTO;
 import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.constants.Commission;
+import fr.marc.paymybuddy.constants.Treasurer;
 import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.TransactionRepository;
@@ -46,7 +49,7 @@ public class TransactionServiceImplTest {
 	private IUserService userService;
 	
 	@Captor
-	ArgumentCaptor<Transaction> userCaptor;
+	ArgumentCaptor<Transaction> transactionCaptor;
 
 	private User user1;
 	private User user2;
@@ -193,33 +196,39 @@ public class TransactionServiceImplTest {
 				.done(false)
 				.user(user2) //TODO : refactored
 				.build();
+			User user3 = User.builder()
+					.id(3)
+					.email(Treasurer.EMAIL)
+					.firstName("")
+					.lastName("")
+					.password("admin123")
+					.rememberMe(false)
+					.iban("FR001")
+					.bank("Banque1")
+					.build();
 			
 			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
 				.thenReturn(transaction3);
-			when(userService.getUserById(1))
-				.thenReturn(Optional.of(user1));
-			when(userService.getUserById(2))
-				.thenReturn(Optional.of(user2));
-			when(userService.getUserById(5))
+			when(userRepository.findById(anyInt()))
+				.thenReturn(Optional.of(user1))
+				.thenReturn(Optional.of(user2))
 				.thenReturn(Optional.of(user2));
 			
-			when(transactionRepository.save(userTransactionTest))
-				.thenReturn(userTransactionTest);
-			when(transactionRepository.save(buddyTransactionTest))
-				.thenReturn(buddyTransactionTest);
-			when(transactionRepository.save(sendCommissionTransactionTest))
-				.thenReturn(sendCommissionTransactionTest);
-			when(transactionRepository.save(receiveCommissionTransactionTest))
+			when(userRepository.findByEmail(Treasurer.EMAIL))
+				.thenReturn(Optional.of(user3));
+			
+			when(transactionRepository.save(any(Transaction.class)))
+				.thenReturn(userTransactionTest)
+				.thenReturn(buddyTransactionTest)
+				.thenReturn(sendCommissionTransactionTest)
 				.thenReturn(receiveCommissionTransactionTest);
 			
 			transactionService.sendMoneyToBuddy(sendMoneyDTO);
 			
-			verify(transactionRepository,times(4)).save(userCaptor.capture());
-			assertThat(userCaptor.getValue()).isEqualTo(userTransactionTest);
-			assertThat(userCaptor.getValue()).isEqualTo(buddyTransactionTest);
-			assertThat(userCaptor.getValue()).isEqualTo(sendCommissionTransactionTest);
-			assertThat(userCaptor.getValue()).isEqualTo(receiveCommissionTransactionTest);
-			
+			verify(transactionRepository,times(4)).save(transactionCaptor.capture());
+			assertThat(transactionCaptor.getAllValues())
+				.extracting("buddyId","amount")
+				.contains(tuple(2,"-100.00"),tuple(1,"100.00"),tuple(3,"-0.50"),tuple(1,"0.50"));
 		
 		}
 	}	
@@ -475,8 +484,8 @@ public class TransactionServiceImplTest {
 		when(transactionRepository.save(any(Transaction.class)))
 			.thenReturn(transaction1ToAdd);
 		transactionService.addTransaction(transaction1ToAdd);
-		verify(transactionRepository).save(userCaptor.capture());
-		assertThat(userCaptor.getValue()).isEqualTo(transaction1ToAdd);
+		verify(transactionRepository).save(transactionCaptor.capture());
+		assertThat(transactionCaptor.getValue()).isEqualTo(transaction1ToAdd);
 		
 	}
 	

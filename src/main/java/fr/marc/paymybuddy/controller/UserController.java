@@ -6,13 +6,15 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -85,14 +87,28 @@ public class UserController {
         return "profile";
     }
 	
-	
+	// TODO : Fix login page
 	/*
 	 * Page "Login"
-	*/
+	*
 	@GetMapping("/login")
-	public String loginForm(Model model,@RequestParam String message) {
+	public String loginForm(Model model, @RequestParam String message) {
 		model.addAttribute("loginDTO", new LoginDTO());
 		model.addAttribute("message", message);
+		
+		//log.info("GET request - endpoint /login - bindingResult = {}",result);
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		log.info("GET request - endpoint /login - SecurityContext = {}",ctx);
+		
+		return "login";
+	}
+	*/
+	@GetMapping("/login")
+	public String loginForm() {
+		
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		log.info("GET request - endpoint /login - SecurityContext = {}",ctx);
+		
 		return "login";
 	}
 	
@@ -151,6 +167,10 @@ public class UserController {
 		model.addAttribute("activities",activities);
 		BankOrderDTO bankOrderDTO = new BankOrderDTO();
 		model.addAttribute("bankOrderDTO",bankOrderDTO);
+		
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		log.info("GET request - endpoint /home - SecurityContext = {}",ctx);
+		
         return "home";
     }
 	

@@ -21,18 +21,19 @@ CREATE TABLE user (
   password VARCHAR(100) NOT NULL,
   remember_me BOOLEAN DEFAULT false,
   iban VARCHAR(34),
-  bank VARCHAR(100)
+  bank VARCHAR(100),
+  role VARCHAR(15) DEFAULT 'USER'
   );
 
 -- Default values for table 'user'
 
-INSERT INTO user (email,first_name,last_name,password,iban,bank)
+INSERT INTO user (email,first_name,last_name,password,iban,bank,role)
 VALUES
-('acall@mail.fr','Arthur','Call','Excalibur','FR00123456789','Camelot'),
-('mking@mail.fr','Midas','King','Gold','FR00234567891','Phrygie Bank'),
-('jpoor@mail.fr','Job','Poor','Nothing','FR00345678912','Sanzinron Bank'),
-('bpicsou@mail.fr','Balthazar','Picsou','Money','FR00456789123','Duck Bank'),
-('admin@mail.fr','PayMyBuddy','','admin123','FR00','Bank');
+('acall@mail.fr','Arthur','Call','Excalibur','FR00123456789','Camelot','USER'),
+('mking@mail.fr','Midas','King','Gold','FR00234567891','Phrygie Bank','USER'),
+('jpoor@mail.fr','Job','Poor','Nothing','FR00345678912','Sanzinron Bank','USER'),
+('bpicsou@mail.fr','Balthazar','Picsou','Money','FR00456789123','Duck Bank','USER'),
+('admin@mail.fr','PayMyBuddy','','admin123','FR00','Bank','ADMIN');
 
 --
 -- Table structure for table `connection`
