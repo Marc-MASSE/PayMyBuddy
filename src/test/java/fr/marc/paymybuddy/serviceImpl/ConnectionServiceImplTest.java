@@ -197,4 +197,7 @@ public class ConnectionServiceImplTest {
 		assertThat(idCaptor.getValue()).isEqualTo(1);
 		verify(connectionRepository).deleteById(1);
 	}
+	
+	// TODO : newBuddyAvailabilityMessage
+	
 }

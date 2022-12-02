@@ -3,11 +3,10 @@ package fr.marc.paymybuddy.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.criteria.CriteriaBuilder.Case;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,17 +75,18 @@ public class TransactionController {
 	 * and a form to send money to a buddy
 	 */
     @GetMapping("/transfer")
-    public String displayTransferPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /transfer - id = "+id);
+    public String displayTransferPageById(Model model) {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+    	log.info("GET request - endpoint /transfer - email = "+connectedEmail);
 		
-		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
 		
-		List<BuddyDTO> buddyList = connectionService.getBuddyList(id);
+		List<BuddyDTO> buddyList = connectionService.getBuddyList(user.getId());
 		model.addAttribute("buddyList",buddyList);
 		log.info("Buddy list = "+buddyList);
 		
-		List<ActivityDTO> transactions = transactionService.getTransactionsById(id);
+		List<ActivityDTO> transactions = transactionService.getTransactionsById(user.getId());
 		model.addAttribute("transactions",transactions);
 		log.info("Transactions list = "+transactions);
 		
@@ -211,7 +211,6 @@ public class TransactionController {
 			
 			return "bankorder";
 		}
-		
     }
     
 	/*

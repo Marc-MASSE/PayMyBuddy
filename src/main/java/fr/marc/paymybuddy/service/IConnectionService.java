@@ -16,5 +16,7 @@ public interface IConnectionService {
 	Connection addANewBuddy(String email, Integer UserId);
 	
 	void deleteConnectionById(Integer id);
+	
+	String newBuddyAvailabilityMessage (String buddyEmail, String userEmail);
 
 }

@@ -18,11 +18,15 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.service.ITransactionService;
 
@@ -125,7 +129,38 @@ public class TransactionControllerTest {
     }
     
     //TODO : End point "/confirmation"
-	
+	@Nested
+	@WithMockUser
+	class displayConfirmationPageByIdTest {
+		@Test
+	    public void success() throws Exception {
+			
+			SendMoneyDTO sendMoneyDTO = SendMoneyDTO.builder()
+					.userId(1)
+					.buddyId(2)
+					.amount(100)
+					.build();
+			
+	        mockMvc.perform(post("/confirmation?id=1")
+	        		//.contentType(MediaType.ALL)
+	        		//.content(sendMoneyDTO)
+	        		//.param("buddyId","2")
+	        		//.param("amount", "100")
+	        		)
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("confirmation"))
+	            //.andExpect(content().string(containsString("100.00")))
+	            //.andExpect(content().string(containsString("Send Money to")))
+	            //.andExpect(content().string(containsString("Midas King")))
+	            ;
+	    }
+		
+		@Test
+	    public void no_answer() throws Exception {
+			
+	    }
+	}
+    
 	
 	//TODO : End point "/bankOrder"
 	

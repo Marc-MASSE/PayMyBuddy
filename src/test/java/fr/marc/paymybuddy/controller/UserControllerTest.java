@@ -146,7 +146,7 @@ public class UserControllerTest {
 	    }
 	}
     
-    // TODO : End point "/loginRequest"
+    // End point "/loginRequest"
 	@Nested
 	@WithMockUser
 	class TestLoginRequest {
@@ -229,7 +229,7 @@ public class UserControllerTest {
             .andExpect(content().string(containsString("450.00")));
     }
 	
-    // TODO : End point "/contact"
+    // End point "/contact"
     @Test
 	@WithMockUser
     public void testDisplayArthurContactPage() throws Exception {
@@ -240,7 +240,7 @@ public class UserControllerTest {
             .andExpect(content().string(containsString("www.paymybuddy.com")));
     }
 	
-    // TODO : End point "/user" POST
+    // End point "/user" POST
     @Test
 	@WithMockUser
     public void testAddAUser() throws Exception {
@@ -264,7 +264,7 @@ public class UserControllerTest {
         userRepository.delete(userRepository.findByEmail("user1@mail.fr").get());
     }
 	
-	// TODO : End point "/saveUser"
+	// End point "/saveUser"
     @Test
 	@WithMockUser
     public void testModifyAUser() throws Exception {

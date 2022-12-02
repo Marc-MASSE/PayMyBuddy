@@ -1,12 +1,21 @@
 package fr.marc.paymybuddy.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
@@ -85,4 +94,19 @@ public class UserServiceImpl implements IUserService {
 		return user.get().getFirstName()+" "+user.get().getLastName();
 	}
 	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByEmail(username).get();
+		if (user == null) {
+			throw new UsernameNotFoundException("Invalid username or password.");
+		}
+		List<String> roles = new ArrayList<>();
+		roles.add(user.getRole());
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+				mapRolesToAuthorities(roles));
+	}
+	
+	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<String> roles) {
+		return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+	}
 }

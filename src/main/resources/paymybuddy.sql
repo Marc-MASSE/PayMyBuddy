@@ -26,14 +26,15 @@ CREATE TABLE user (
   );
 
 -- Default values for table 'user'
+-- password encrypted by https://bcrypt-generator.com/
 
 INSERT INTO user (email,first_name,last_name,password,iban,bank,role)
 VALUES
-('acall@mail.fr','Arthur','Call','Excalibur','FR00123456789','Camelot','USER'),
-('mking@mail.fr','Midas','King','Gold','FR00234567891','Phrygie Bank','USER'),
-('jpoor@mail.fr','Job','Poor','Nothing','FR00345678912','Sanzinron Bank','USER'),
-('bpicsou@mail.fr','Balthazar','Picsou','Money','FR00456789123','Duck Bank','USER'),
-('admin@mail.fr','PayMyBuddy','','admin123','FR00','Bank','ADMIN');
+('acall@mail.fr','Arthur','Call','$2a$12$ad7CoCIaCW/VqS3ajYwbTuK3qcDPVfhK4wN7v49bvgfuBx8kpLYxu','FR00123456789','Camelot','USER'),
+('mking@mail.fr','Midas','King','$2a$12$uUzR1iA5aeAGK/3VOnOumeGpHFNZ2m0oGh0uxv2/I0QBhvUAG0SoC','FR00234567891','Phrygie Bank','USER'),
+('jpoor@mail.fr','Job','Poor','$2a$12$2z.2F1REBOgG5Ucw03cwjeSHSTTne7Ogh.gMaNr2g47fAam0.//ti','FR00345678912','Sanzinron Bank','USER'),
+('bpicsou@mail.fr','Balthazar','Picsou','$2a$12$0mCUS7.q9DbA/Dj11WcIke77t.sM5hV6Zjv3U94LkwwA3/M6hW72C','FR00456789123','Duck Bank','USER'),
+('admin@mail.fr','PayMyBuddy','','$2a$12$YhJHXY76WwFZ4SbTUzqxZOGM6aYyVkTJi2LFwWIpmtbm9cbZ.TgI2','FR00','Bank','ADMIN');
 
 --
 -- Table structure for table `connection`

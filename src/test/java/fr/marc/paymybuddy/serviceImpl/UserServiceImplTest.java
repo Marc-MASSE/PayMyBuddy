@@ -2,15 +2,12 @@ package fr.marc.paymybuddy.serviceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,16 +16,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.User;
-import fr.marc.paymybuddy.repository.ConnectionRepository;
-import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
-import fr.marc.paymybuddy.service.ITransactionService;
 import fr.marc.paymybuddy.service.IUserService;
-import fr.marc.paymybuddy.serviceImpl.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {

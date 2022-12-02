@@ -26,20 +26,20 @@
 
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
-					<li class="mx-1"><a th:href="@{transfer(id=${user.id})}">Transfer</a></li>
-					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
-					<li class="mx-1"><a th:href="@{contact(id=${user.id})}">Contact</a></li>
-					<li class="mx-1"><a th:href="@{/}">Log off</a></li>
+					<li class="mx-1"><a th:href="@{home}">Home</a></li>
+					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
+					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
+					<li class="mx-1"><a th:href="@{logout}">Log off</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="bg-light">
 			<span class="mx-1">
-				<a th:href="@{home(id=${user.id})}">Home /</a>
+				<a th:href="@{home}">Home /</a>
 			</span>
 			<span>
-				<a th:href="@{transfer(id=${user.id})}">Transfer /</a>
+				<a th:href="@{transfer}">Transfer /</a>
 			</span>
 			<span class="mx-1">Add Connection</span>
 		</div>
@@ -50,7 +50,7 @@
 		</div>
 		
 		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{addABuddy(id=${user.id})}" th:object="${buddy}">
+			<form method="post" th:action="@{addABuddy}" th:object="${buddy}">
 				<div class="row d-flex justify-content-around">
 					<div class="col-3">
 						<input type="email" placeholder="Email of a buddy" th:field="*{email}"/>
@@ -82,6 +82,11 @@
 			</table>
 		
 		</div>
+		
+		<!-- Error line -->
+        <div>
+            <div th:unless="${message==''}" class="alert alert-danger" th:text="${message}">Message</div>
+        </div>
 		
 	</div>
 

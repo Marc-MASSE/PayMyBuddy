@@ -6,11 +6,9 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
 import fr.marc.paymybuddy.DTO.BankOrderDTO;
-import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.service.ITransactionService;
 import fr.marc.paymybuddy.service.IUserService;
@@ -41,6 +38,9 @@ public class UserController {
 	
 	@Autowired
 	private ITransactionService transactionService;
+	
+	//@Autowired
+	//private SpringSecurityConfig springSecurityConfig;
 
 	@ResponseBody
 	@GetMapping("/users")
@@ -58,14 +58,12 @@ public class UserController {
 	
 	/*
 	 * When open to "/" page, redirect to "Login" page
-	*/
+	*
     @GetMapping("/")
-    public String login(Model model) {
-		log.info("Redirect to Login page");
-		String message ="";
-		model.addAttribute(message);
-        return "redirect:/login?message="+message;
+    public String login() {
+        return "login";
     }
+    */
     
 	/*
 	 * Page "Admin"
@@ -80,96 +78,71 @@ public class UserController {
 	 * Page "Profile"
 	*/
     @GetMapping("/profile")
-    public String displayProfileById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /profile - id = {}",id);
-		User user = userService.getUserById(id).get();
+    public String displayProfileById(Model model) {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		log.info("GET request - endpoint /profile - email = {}",connectedEmail);
 		model.addAttribute("user",user);
         return "profile";
     }
 	
-	// TODO : Fix login page
 	/*
 	 * Page "Login"
-	*
-	@GetMapping("/login")
-	public String loginForm(Model model, @RequestParam String message) {
-		model.addAttribute("loginDTO", new LoginDTO());
-		model.addAttribute("message", message);
-		
-		//log.info("GET request - endpoint /login - bindingResult = {}",result);
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		log.info("GET request - endpoint /login - SecurityContext = {}",ctx);
-		
-		return "login";
-	}
 	*/
 	@GetMapping("/login")
 	public String loginForm() {
-		
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		log.info("GET request - endpoint /login - SecurityContext = {}",ctx);
-		
 		return "login";
 	}
 	
 	/*
-	 * Page "Login", verify if email and password match
-	 * If user_id = -2 => message email unknown
-	 * If user_id = -1 => message password doesn't match
-	 * If email and password matched redirect to Home page.
-	 */
-    @PostMapping(value = "/loginRequest")
-    public String verifyLogin(@ModelAttribute("login") LoginDTO loginDTO) {
-		log.info("POST request - endpoint /loginRequest - body = {}",loginDTO);
-		Integer userId = userService.verifyLogin(loginDTO);
-		log.info("user_id = {}",userId);
-		String message;
-		switch(userId) {
-		  case -2:
-			  message = "Your email isn't registed";
-			  log.info("Message = {}",message);
-			  return "redirect:/login?message="+message;
-		  case -1:
-			  message = "The password doesn't match with your email";
-			  log.info("Message = {}",message);
-			  return "redirect:/login?message="+message;
-		  default:
-			  return "redirect:/home?id="+userId.toString();
-		}
-    }
+	 * Page "Login"
+	*/
+	@GetMapping("/logout")
+	public String logout() {
+		return "redirect:/login";
+	}
 	
-	
-	@ResponseBody
     @GetMapping("/balance")
-    public String getBalanceById(@RequestParam int id) {
-		log.info("GET request - endpoint /balance - id = {}",id);
-        return transactionService.getBalance(id);
+    public String getBalanceById() {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		log.info("GET request - endpoint /balance - email = {}",connectedEmail);
+        return transactionService.getBalance(user.getId());
     }
     
-	@ResponseBody
     @GetMapping("/activity")
-    public List<ActivityDTO> getActivityById(@RequestParam int id) {
-		log.info("GET request - endpoint /activity - id = {}",id);
-        return transactionService.getActivityById(id);
+    public List<ActivityDTO> getActivityById() {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		log.info("GET request - endpoint /activity - email = {}",connectedEmail);
+        return transactionService.getActivityById(user.getId());
     }
 	
 	/*
 	 * Page "Home"
 	*/
-    @GetMapping("/home")
-    public String displayHomePageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /home - id = {}",id);
-		User user = userService.getUserById(id).get();
+    //@GetMapping("/home")
+    //public String displayHomePageById(Model model,@RequestParam int id) {
+    	
+	@GetMapping("/home")
+	public String displayHomePageById(Model model) {
+    	
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		
+		log.info("GET request - endpoint /home - connectedEmail = {}",connectedEmail);
+		log.info("Role = {}",SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+		
 		model.addAttribute("user",user);
-		String balance = transactionService.getBalance(id);
+		
+		String balance = transactionService.getBalance(user.getId());
 		model.addAttribute("balance",balance);
-		List<ActivityDTO> activities = transactionService.getActivityById(id);
+		
+		List<ActivityDTO> activities = transactionService.getActivityById(user.getId());
 		model.addAttribute("activities",activities);
+		
 		BankOrderDTO bankOrderDTO = new BankOrderDTO();
 		model.addAttribute("bankOrderDTO",bankOrderDTO);
-		
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		log.info("GET request - endpoint /home - SecurityContext = {}",ctx);
 		
         return "home";
     }
@@ -177,11 +150,17 @@ public class UserController {
 	/*
 	 * Page "Contact"
 	*/
+	/*
     @GetMapping("/contact")
     public String displayContactPageById(Model model,@RequestParam int id) {
 		log.info("GET request - endpoint /contact - id = {}",id);
 		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
+        return "contact";
+    }
+    */
+    @GetMapping("/contact")
+    public String displayContactPageById() {
         return "contact";
     }
     
@@ -190,8 +169,9 @@ public class UserController {
 	*/
     @GetMapping("/modify")
     public String displayModifyPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /modify - id = {}",id);
-		User user = userService.getUserById(id).get();
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		log.info("GET request - endpoint /modify - email = {}",connectedEmail);
 		model.addAttribute("user",user);
         return "modify";
     }
@@ -207,21 +187,18 @@ public class UserController {
 	 * Page "Modify" to update a user
 	*/
     @PostMapping(value = "/saveUser")
-    public String saveUser(@ModelAttribute("modify") User user,@RequestParam Integer id) {
-    	user.setId(id);
+    public String saveUser(@ModelAttribute("modify") User user) {
+    	// TODO : cas où on change l'email
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		//User user = userService.getUserByEmail(connectedEmail).get();
+    	user.setId(userService.getUserByEmail(connectedEmail).get().getId());
 		log.info("POST request - endpoint /saveUser - body = {}",user);
 		userService.addUser(user);
-    	return "redirect:/profile?id="+id.toString();
+    	return "redirect:/profile";
     }
     
-    /*
-	@ResponseBody
-    @PutMapping(value = "/user")
-    public User updateUser(@RequestBody User user) {
-		log.info("PUT request - endpoint /user - body = {}",user);
-    	return userService.addUser(user);
-    }
-	*/
+    
+    
     
 	@ResponseBody
     @DeleteMapping("/user")

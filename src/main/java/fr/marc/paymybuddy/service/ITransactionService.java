@@ -39,6 +39,6 @@ public interface ITransactionService {
 
 	String getProjectedBalance(String balance, String amount);
 
-	SendMoneyDTO convertToSendMoney(BankOrderDTO bankOrderDTO);
+	//SendMoneyDTO convertToSendMoney(BankOrderDTO bankOrderDTO);
 
 }

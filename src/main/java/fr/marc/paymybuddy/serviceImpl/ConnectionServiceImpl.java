@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.DTO.BuddyDTO;
+import fr.marc.paymybuddy.constants.Treasurer;
 import fr.marc.paymybuddy.model.Connection;
 import fr.marc.paymybuddy.model.User;
 import fr.marc.paymybuddy.repository.ConnectionRepository;
@@ -26,6 +27,8 @@ public class ConnectionServiceImpl implements IConnectionService {
 	private IUserService userService;
 	
 	private ConnectionRepository connectionRepository;
+	
+	private String message;
 	
 	@Autowired
 	public ConnectionServiceImpl(UserRepository userRepository,ConnectionRepository connectionRepository) {
@@ -73,6 +76,25 @@ public class ConnectionServiceImpl implements IConnectionService {
 	@Override
 	public void deleteConnectionById(Integer id) {
 		connectionRepository.deleteById(id);
+	}
+
+	@Override
+	public String newBuddyAvailabilityMessage(String buddyEmail, String userEmail) {
+		// TODO Auto-generated method stub
+		message = "";
+		if (userRepository.findByEmail(buddyEmail).isEmpty()) {
+			message = "This buddy isn't registered.";
+		}
+		if (buddyEmail.equals(Treasurer.EMAIL)) {
+			message = "This email isn't available";
+		}
+		List<BuddyDTO> buddyList = getBuddyList(userRepository.findByEmail(userEmail).get().getId());
+		buddyList.forEach(b -> {
+			if (b.getEmail().equals(buddyEmail)) {
+				message = b.getBuddyName()+" is already your buddy.";
+			}
+		});
+		return message;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +38,7 @@ public class ConnectionController {
 	
 	@ResponseBody
     @PostMapping(value = "/connection")
-    public Connection addUser(@RequestBody Connection connection) {
+    public Connection addAConnection(@RequestBody Connection connection) {
 		log.info("POST request - endpoint /connection - body = "+connection);
     	return connectionService.addConnection(connection);
     }
@@ -48,15 +49,18 @@ public class ConnectionController {
 	 * To add a new buddy or delete a buddy
 	 */
     @GetMapping("/buddies")
-    public String displayBuddiesPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /buddies - id = "+id);
+    public String displayBuddiesPageById(Model model, @RequestParam String message) {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		log.info("GET request - endpoint /buddies - email = "+connectedEmail);
 		
-		User user = userService.getUserById(id).get();
 		model.addAttribute("user",user);
 		
-		List<BuddyDTO> buddyList = connectionService.getBuddyList(id);
+		model.addAttribute("message",message);
+		
+		List<BuddyDTO> buddyList = connectionService.getBuddyList(user.getId());
 		model.addAttribute("buddyList",buddyList);
-		log.debug("Buddy list = "+buddyList);
+		log.info("Buddy list = "+buddyList);
 		
 		BuddyDTO buddy = new BuddyDTO();
 		model.addAttribute("buddy",buddy);
@@ -68,15 +72,18 @@ public class ConnectionController {
 	 * Page "Buddies", add a buddy by Email
 	 */
     @PostMapping(value = "/addABuddy")
-    public String addABuddy(@ModelAttribute("buddies") BuddyDTO buddy,@RequestParam Integer id) {
+    public String addABuddy(@ModelAttribute("buddies") BuddyDTO buddy) {
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
 		log.info("POST request - endpoint /addABuddy - buddy's email = "+buddy.getEmail());
-		try {
-			connectionService.addANewBuddy(buddy.getEmail(),id);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
 		
-		return "redirect:/buddies?id="+id.toString();
+		String message = connectionService.newBuddyAvailabilityMessage(buddy.getEmail(), connectedEmail);
+		log.info("Message = {}",message);
+		
+		if (message=="") {
+			connectionService.addANewBuddy(buddy.getEmail(),user.getId());
+		}
+		return "redirect:/buddies?message="+message;
     }
 	
 	

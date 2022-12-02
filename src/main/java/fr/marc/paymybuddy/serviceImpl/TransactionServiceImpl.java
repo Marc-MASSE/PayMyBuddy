@@ -87,8 +87,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	 */
 	@Override
     public void receiveMoneyFromBank (SendMoneyDTO sendMoneyDTO) {
-		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
-		//TODO : log.info("Send money from {} to {} pay = {}"+sendMoneyDTO.getAmount(),sendMoneyDTO.getUserId(),sendMoneyDTO.getBuddyId());
+		log.info("Send money from {} to {} pay = {}",sendMoneyDTO.getUserId(),sendMoneyDTO.getBuddyId(),sendMoneyDTO.getAmount());
 		
 		Transaction userTransaction = createReceivingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
@@ -108,7 +107,7 @@ public class TransactionServiceImpl implements ITransactionService {
 	 */
 	@Override
     public void sendMoneyToBank (SendMoneyDTO sendMoneyDTO) {
-		log.info("Send money from "+sendMoneyDTO.getUserId()+" to "+sendMoneyDTO.getBuddyId()+" pay = "+sendMoneyDTO.getAmount());
+		log.info("Send money from {} to {} pay = {}",sendMoneyDTO.getUserId(),sendMoneyDTO.getBuddyId(),sendMoneyDTO.getAmount());
 		
 		Transaction userTransaction = createSendingTransaction(sendMoneyDTO, BigDecimal.ONE);
 		
@@ -251,6 +250,7 @@ public class TransactionServiceImpl implements ITransactionService {
 		return projectedBalance.toString();
 	}
 	
+	/*
 	@Override
 	public SendMoneyDTO convertToSendMoney (BankOrderDTO bankOrderDTO) {
 		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
@@ -262,5 +262,6 @@ public class TransactionServiceImpl implements ITransactionService {
 				.build();
 		return sendMoneyDTO;
 	}
+	*/
 	
 }

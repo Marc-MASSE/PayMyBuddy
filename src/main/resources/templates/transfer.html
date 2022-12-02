@@ -26,17 +26,17 @@
 
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1"><a th:href="@{home(id=${user.id})}">Home</a></li>
+					<li class="mx-1"><a th:href="@{home}">Home</a></li>
 					<li class="mx-1 text-primary">Transfer</li>
-					<li class="mx-1"><a th:href="@{profile(id=${user.id})}">Profile</a></li>
-					<li class="mx-1"><a th:href="@{contact(id=${user.id})}">Contact</a></li>
-					<li class="mx-1"><a th:href="@{/}">Log off</a></li>
+					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
+					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
+					<li class="mx-1"><a th:href="@{logout}">Log off</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="bg-light">
 			<span class="mx-1">
-				<a th:href="@{home(id=${user.id})}">Home /</a>
+				<a th:href="@{home}">Home /</a>
 			</span>
 			<span class="mx-1">Transfer</span>
 		</div>
@@ -47,7 +47,7 @@
 				<span>Send Money</span>
 			</div>
 			<div class="col-3 bg-primary text-white rounded py-2">
-				<a class="text-center text-white" th:href="@{buddies(id=${user.id})}">Add Connection</a>
+				<a class="text-center text-white" th:href="@{buddies(message='')}">Add Connection</a>
 			</div>
 		</div>
 		
@@ -71,11 +71,6 @@
 						<button type="submit" class="green_context text-white rounded w-100">Pay</button>
 					</div>
 				</div>
-				<!--
-				<div class="row">
-					<input class="col-10 mx-auto mt-4" type="text" placeholder="Description" th:field="*{description}"/>
-				</div>
-				-->
 			</form>
 		</div>
 		

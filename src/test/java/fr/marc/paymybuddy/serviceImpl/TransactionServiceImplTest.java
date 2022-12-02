@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -145,7 +144,6 @@ public class TransactionServiceImplTest {
 		}
 	}
 	
-	//TODO : sendMoneyToBuddy
 	@Nested
 	class SendMoneyToBuddyTest {
 		@Test
@@ -179,7 +177,7 @@ public class TransactionServiceImplTest {
 			Transaction sendCommissionTransactionTest = new Transaction();
 			sendCommissionTransactionTest = Transaction.builder()
 				.transactionNumber(4)
-				.buddyId(5) //TODO : refactored
+				.buddyId(3)
 				.description("Gift")
 				.amount("-0.50")
 				.date(LocalDate.now())
@@ -194,7 +192,7 @@ public class TransactionServiceImplTest {
 				.amount("0.50")
 				.date(LocalDate.now())
 				.done(false)
-				.user(user2) //TODO : refactored
+				.user(user2)
 				.build();
 			User user3 = User.builder()
 					.id(3)
@@ -226,17 +224,181 @@ public class TransactionServiceImplTest {
 			transactionService.sendMoneyToBuddy(sendMoneyDTO);
 			
 			verify(transactionRepository,times(4)).save(transactionCaptor.capture());
+			
 			assertThat(transactionCaptor.getAllValues())
 				.extracting("buddyId","amount")
 				.contains(tuple(2,"-100.00"),tuple(1,"100.00"),tuple(3,"-0.50"),tuple(1,"0.50"));
+			
+			verify(transactionRepository,times(4)).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository,times(4)).findById(anyInt());
+			verify(userRepository).findByEmail(Treasurer.EMAIL);
+			verify(transactionRepository,times(4)).save(any(Transaction.class));
 		
 		}
 	}	
 	
+	@Nested
+	class ReceiveMoneyFromBankTest {
+		@Test
+		public void simpleReceiving() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(1)
+				.description("From my bank")
+				.amount(100)
+				.build();
+			Transaction userTransactionTest = new Transaction();
+			userTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("From my bank")
+				.amount("100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction sendCommissionTransactionTest = new Transaction();
+			sendCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(3)
+				.description("From my bank")
+				.amount("-0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction receiveCommissionTransactionTest = new Transaction();
+			receiveCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("From my bank")
+				.amount("0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			User user3 = User.builder()
+					.id(3)
+					.email(Treasurer.EMAIL)
+					.firstName("")
+					.lastName("")
+					.password("admin123")
+					.rememberMe(false)
+					.iban("FR001")
+					.bank("Banque1")
+					.build();
+			
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(anyInt()))
+				.thenReturn(Optional.of(user1))
+				.thenReturn(Optional.of(user1))
+				.thenReturn(Optional.of(user1));
+			
+			when(userRepository.findByEmail(Treasurer.EMAIL))
+				.thenReturn(Optional.of(user3));
+			
+			when(transactionRepository.save(any(Transaction.class)))
+				.thenReturn(userTransactionTest)
+				.thenReturn(sendCommissionTransactionTest)
+				.thenReturn(receiveCommissionTransactionTest);
+			
+			transactionService.receiveMoneyFromBank(sendMoneyDTO);
+			
+			verify(transactionRepository,times(3)).save(transactionCaptor.capture());
+			
+			assertThat(transactionCaptor.getAllValues())
+				.extracting("buddyId","amount")
+				.contains(tuple(1,"100.00"),tuple(3,"-0.50"),tuple(1,"0.50"));
+			
+			verify(transactionRepository,times(3)).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository,times(3)).findById(anyInt());
+			verify(userRepository).findByEmail(Treasurer.EMAIL);
+			verify(transactionRepository,times(3)).save(any(Transaction.class));
+		}
+	}	
 	
-	//TODO : receiveMoneyFromBank
+	@Nested
+	class SendMoneyFromBankTest {
+		@Test
+		public void simpleSending() {
+			sendMoneyDTO = SendMoneyDTO.builder()
+				.userId(1)
+				.buddyId(1)
+				.description("To my bank")
+				.amount(100)
+				.build();
+			Transaction userTransactionTest = new Transaction();
+			userTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("To my bank")
+				.amount("-100.00")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction sendCommissionTransactionTest = new Transaction();
+			sendCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(3)
+				.description("From my bank")
+				.amount("-0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			Transaction receiveCommissionTransactionTest = new Transaction();
+			receiveCommissionTransactionTest = Transaction.builder()
+				.transactionNumber(4)
+				.buddyId(1)
+				.description("From my bank")
+				.amount("0.50")
+				.date(LocalDate.now())
+				.done(false)
+				.user(user1)
+				.build();
+			User user3 = User.builder()
+					.id(3)
+					.email(Treasurer.EMAIL)
+					.firstName("")
+					.lastName("")
+					.password("admin123")
+					.rememberMe(false)
+					.iban("FR001")
+					.bank("Banque1")
+					.build();
+			
+			when(transactionRepository.findFirstByOrderByTransactionNumberDesc())
+				.thenReturn(transaction3);
+			when(userRepository.findById(anyInt()))
+				.thenReturn(Optional.of(user1))
+				.thenReturn(Optional.of(user1))
+				.thenReturn(Optional.of(user1));
+			
+			when(userRepository.findByEmail(Treasurer.EMAIL))
+				.thenReturn(Optional.of(user3));
+			
+			when(transactionRepository.save(any(Transaction.class)))
+				.thenReturn(userTransactionTest)
+				.thenReturn(sendCommissionTransactionTest)
+				.thenReturn(receiveCommissionTransactionTest);
+			
+			transactionService.sendMoneyToBank(sendMoneyDTO);
+			
+			verify(transactionRepository,times(3)).save(transactionCaptor.capture());
+			
+			assertThat(transactionCaptor.getAllValues())
+				.extracting("buddyId","amount")
+				.contains(tuple(1,"-100.00"),tuple(3,"-0.50"),tuple(1,"0.50"));
+			
+			verify(transactionRepository,times(3)).findFirstByOrderByTransactionNumberDesc();
+			verify(userRepository,times(3)).findById(anyInt());
+			verify(userRepository).findByEmail(Treasurer.EMAIL);
+			verify(transactionRepository,times(3)).save(any(Transaction.class));
+		}
+	}	
 	
-	//TODO : sendMoneyFromBank
 	
 	@Nested
 	class GetBalance{
@@ -513,7 +675,7 @@ public class TransactionServiceImplTest {
 		}
 	}
 	
-	//TODO : convertToSendMoney
+	//convertToSendMoney
 	
 
 }
