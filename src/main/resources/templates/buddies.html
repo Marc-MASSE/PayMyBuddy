@@ -27,7 +27,7 @@
 			<div class="col-9">
 				<ul class="nav justify-content-end">
 					<li class="mx-1"><a th:href="@{home}">Home</a></li>
-					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
 					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
 					<li class="mx-1"><a th:href="@{logout}">Log off</a></li>
@@ -39,7 +39,7 @@
 				<a th:href="@{home}">Home /</a>
 			</span>
 			<span>
-				<a th:href="@{transfer}">Transfer /</a>
+				<a th:href="@{transfer(message='')}">Transfer /</a>
 			</span>
 			<span class="mx-1">Add Connection</span>
 		</div>
@@ -61,6 +61,10 @@
 				</div>
 			</form>
 		</div>
+		<!-- Error line -->
+        <div class="row col-md-8 col-xs-12 mx-auto">
+            <div th:unless="${message==''}" class="alert alert-danger" th:text="${message}">Message</div>
+        </div>
 		
 		
 		<!-- My activities table -->
@@ -80,13 +84,7 @@
 					</tr>
 				</tbody>
 			</table>
-		
 		</div>
-		
-		<!-- Error line -->
-        <div>
-            <div th:unless="${message==''}" class="alert alert-danger" th:text="${message}">Message</div>
-        </div>
 		
 	</div>
 

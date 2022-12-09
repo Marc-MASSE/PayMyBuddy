@@ -86,7 +86,7 @@ public class ConnectionServiceImpl implements IConnectionService {
 			message = "This buddy isn't registered.";
 		}
 		if (buddyEmail.equals(Treasurer.EMAIL)) {
-			message = "This email isn't available";
+			message = "This email isn't available.";
 		}
 		List<BuddyDTO> buddyList = getBuddyList(userRepository.findByEmail(userEmail).get().getId());
 		buddyList.forEach(b -> {

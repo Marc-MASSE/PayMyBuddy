@@ -39,8 +39,6 @@ public class UserController {
 	@Autowired
 	private ITransactionService transactionService;
 	
-	//@Autowired
-	//private SpringSecurityConfig springSecurityConfig;
 
 	@ResponseBody
 	@GetMapping("/users")
@@ -56,14 +54,6 @@ public class UserController {
         return userService.getUserById(id);
     }
 	
-	/*
-	 * When open to "/" page, redirect to "Login" page
-	*
-    @GetMapping("/")
-    public String login() {
-        return "login";
-    }
-    */
     
 	/*
 	 * Page "Admin"
@@ -95,13 +85,17 @@ public class UserController {
 	}
 	
 	/*
-	 * Page "Login"
+	 * "Logout" redirect to "Login"
 	*/
 	@GetMapping("/logout")
 	public String logout() {
 		return "redirect:/login";
 	}
 	
+	/*
+	 * Calculate the user's balance to display on "Home" page
+	*/
+	@ResponseBody
     @GetMapping("/balance")
     public String getBalanceById() {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -110,6 +104,10 @@ public class UserController {
         return transactionService.getBalance(user.getId());
     }
     
+	/*
+	 * Collect the user's activity to display on "Home" page
+	*/
+	@ResponseBody
     @GetMapping("/activity")
     public List<ActivityDTO> getActivityById() {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -121,9 +119,6 @@ public class UserController {
 	/*
 	 * Page "Home"
 	*/
-    //@GetMapping("/home")
-    //public String displayHomePageById(Model model,@RequestParam int id) {
-    	
 	@GetMapping("/home")
 	public String displayHomePageById(Model model) {
     	
@@ -150,15 +145,6 @@ public class UserController {
 	/*
 	 * Page "Contact"
 	*/
-	/*
-    @GetMapping("/contact")
-    public String displayContactPageById(Model model,@RequestParam int id) {
-		log.info("GET request - endpoint /contact - id = {}",id);
-		User user = userService.getUserById(id).get();
-		model.addAttribute("user",user);
-        return "contact";
-    }
-    */
     @GetMapping("/contact")
     public String displayContactPageById() {
         return "contact";
@@ -168,7 +154,7 @@ public class UserController {
 	 * Page "Modify"
 	*/
     @GetMapping("/modify")
-    public String displayModifyPageById(Model model,@RequestParam int id) {
+    public String displayModifyPageById(Model model) {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
 		log.info("GET request - endpoint /modify - email = {}",connectedEmail);
@@ -188,17 +174,14 @@ public class UserController {
 	*/
     @PostMapping(value = "/saveUser")
     public String saveUser(@ModelAttribute("modify") User user) {
-    	// TODO : cas où on change l'email
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-		//User user = userService.getUserByEmail(connectedEmail).get();
     	user.setId(userService.getUserByEmail(connectedEmail).get().getId());
+    	user.setEmail(connectedEmail);
+    	user.setPassword(userService.getUserByEmail(connectedEmail).get().getEmail());
 		log.info("POST request - endpoint /saveUser - body = {}",user);
 		userService.addUser(user);
     	return "redirect:/profile";
     }
-    
-    
-    
     
 	@ResponseBody
     @DeleteMapping("/user")

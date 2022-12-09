@@ -1,7 +1,10 @@
 package fr.marc.paymybuddy.service;
 
+import java.util.Collection;
 import java.util.Optional;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import fr.marc.paymybuddy.DTO.LoginDTO;
@@ -23,4 +26,5 @@ public interface IUserService extends UserDetailsService{
 	void deleteUser(Integer id);
 
 	String getCompleteName(Integer id);
+	
 }

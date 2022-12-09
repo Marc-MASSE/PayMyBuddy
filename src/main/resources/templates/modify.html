@@ -27,7 +27,7 @@
 			<div class="col-9">
 				<ul class="nav justify-content-end">
 					<li class="mx-1"><a th:href="@{home}">Home</a></li>
-					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
 					<li class="mx-1"><a th:href="@{account}">Account</a></li>
 					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
@@ -42,12 +42,12 @@
 			<span class="mx-1">
 				<a th:href="@{profile}">Profile /</a>
 			</span>
-			<span class="mx-1">Contact</span>
+			<span class="mx-1">Modify</span>
 		</div>
 
 		<!-- Profile box -->
 		<div class="col-md-6 col-xs-12 border border-secondary rounded mx-auto my-4">
-			<form th:action="@{saveUser(id=${user.id})}" method="post" th:object="${user}">
+			<form th:action="@{saveUser}" method="post" th:object="${user}">
 				<!-- Identity -->
 				<table class="table">
 					<thead>
@@ -66,7 +66,7 @@
 						</tr>
 					</tbody>
 				</table>
-				<!-- Login details -->
+				<!-- Login details --
 				<table class="table">
 					<thead>
 						<tr class="green_context">
@@ -84,6 +84,7 @@
 						</tr>
 					</tbody>
 				</table >
+				-->
 				<!-- Bank -->
 				<table class="table">
 					<thead>
@@ -105,7 +106,7 @@
 			
 				<!-- Modify button -->
 				<div class="row">
-					<button class="green_context rounded mx-auto my-2 w-50" type="submit">Sure ?</button>
+					<button class="green_context rounded mx-auto my-2 w-50" type="submit">Confirm</button>
 				</div>
 			</form>
 			

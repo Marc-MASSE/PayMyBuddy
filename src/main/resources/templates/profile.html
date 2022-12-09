@@ -27,7 +27,7 @@
 			<div class="col-9">
 				<ul class="nav justify-content-end">
 					<li class="mx-1"><a th:href="@{home}">Home</a></li>
-					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
 					<li class="mx-1 text-primary">Profile</li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
 					<li class="mx-1"><a th:href="@{logout}">Log off</a></li>
@@ -75,7 +75,7 @@
 					</tr>
 					<tr>
 						<td>Password :</td>
-						<td th:text="${user.password}">Password</td>
+						<td >&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</td>
 					</tr>
 				</tbody>
 			</table >
@@ -100,7 +100,7 @@
 			
 			<!-- Modify button -->
 			<div class="green_context rounded mx-auto my-2 w-50">
-				<a class="text-white" th:href="@{modify(id=${user.id})}">Modify</a>
+				<a class="text-white" th:href="@{modify}">Modify</a>
 			</div>
 		</div>
 

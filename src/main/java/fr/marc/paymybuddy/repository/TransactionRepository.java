@@ -16,7 +16,13 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
 	public Transaction findFirstByOrderByTransactionNumberDesc();
 	
 	public List<Transaction> findAllByTransactionNumber(Integer transaction_number);
-
-	public void deleteAllByTransactionNumber(int id);
 	
+	public Transaction findFirstByTransactionNumber(Integer transaction_number);
+	
+	//public void deleteAllByTransactionNumber(Integer transaction_number);
+	
+	//public void deleteByTransactionNumber(Integer transaction_number);
+	
+	public Transaction findFirstByUserIdAndBuddyIdAndAmount(Integer userId, Integer buddyId, String amount);
+
 }

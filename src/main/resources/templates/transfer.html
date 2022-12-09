@@ -54,7 +54,7 @@
 		
 		<!-- Send Money box -->
 		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{confirmation(id=${user.id})}" th:object="${sendMoneyDTO}">
+			<form method="post" th:action="@{confirmation}" th:object="${sendMoneyDTO}">
 				<div class="row d-flex justify-content-around">
 					<div class="col-3 dropdow">
 						<select class="w-100" th:field="*{buddyId}">
@@ -74,6 +74,10 @@
 			</form>
 		</div>
 		
+		<!-- Error line -->
+        <div class="row col-md-8 col-xs-12 mx-auto">
+            <div th:unless="${message==''}" class="alert alert-danger" th:text="${message}">Message</div>
+        </div>
 		
 		<!-- My activities table -->
 		<div class="row col-md-8 col-xs-12 mx-auto my-4">
