@@ -59,7 +59,7 @@
 			<span class="fs-5">Bank transaction</span>
 		</div>
 		<div class="row col-md-8 col-xs-12 bg-light mx-auto py-4">
-			<form method="post" th:action="@{bankOrder(id=${user.id})}" th:object="${bankOrderDTO}">
+			<form method="post" th:action="@{bankOrder}" th:object="${bankOrderDTO}">
 				<div class="row d-flex justify-content-around">
 					<div class="col-3 dropdow">
 						<select class="w-100" th:field="*{operationType}">

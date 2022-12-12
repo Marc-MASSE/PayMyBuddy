@@ -119,15 +119,15 @@ public class TransactionController {
 	 * To confirm Send Money to buddy operation
 	 */
     @PostMapping(value = "/confirmation")
-    public String displayConfirmationPageById(Model model,@ModelAttribute SendMoneyDTO sendMoneyDTO) {
+    public String displayConfirmationPage(Model model,@ModelAttribute SendMoneyDTO sendMoneyDTO) {
 		log.info("POST request - endpoint /confirmation - body = {}",sendMoneyDTO);
 		
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
 		
 		// buddyId=0 means no buddy selected
-		if (sendMoneyDTO.getBuddyId()==0 || sendMoneyDTO.getAmount()==null || sendMoneyDTO.getAmount()==0) {
-			return "redirect:/transfer?message=Buddy and amount are required.";
+		if (sendMoneyDTO.getBuddyId()==0 || sendMoneyDTO.getAmount()==null || sendMoneyDTO.getAmount()<=0) {
+			return "redirect:/transfer?message=Buddy and positiv amount are required.";
 		}else {
 			model.addAttribute("user",userService.getUserById(user.getId()).get());
 			sendMoneyDTO.setUserId(user.getId());
@@ -146,22 +146,24 @@ public class TransactionController {
 	 * To confirm bank order operation
 	 */
     @PostMapping(value = "/bankOrder")
-    public String displayBankOrderPageById(Model model,BankOrderDTO bankOrderDTO,@RequestParam Integer id) {
+    public String displayBankOrderPage(Model model,@ModelAttribute BankOrderDTO bankOrderDTO) {
 		log.info("POST request - endpoint /confirmation - body = {}",bankOrderDTO);
+		
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		
 		// buddyId=0 means no buddy selected
-		if (bankOrderDTO.getOperationType()==0 || bankOrderDTO.getAmount()==0) {
-			return "redirect:/home?id="+id.toString();
+		if (bankOrderDTO.getOperationType()==0 || bankOrderDTO.getAmount()<=0) {
+			return "redirect:/home";
 		}else {
-			model.addAttribute("user",userService.getUserById(id).get());
-			
 			SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
 			model.addAttribute("sendMoneyDTO",sendMoneyDTO);
 			
-			bankOrderDTO.setUserId(id);
+			bankOrderDTO.setUserId(user.getId());
 			model.addAttribute("bankOrderDTO",bankOrderDTO);
 			
 			Integer amount =bankOrderDTO.getAmount()*bankOrderDTO.getOperationType();
-			String projectedBalance = transactionService.getProjectedBalance(transactionService.getBalance(id),amount.toString());
+			String projectedBalance = transactionService.getProjectedBalance(transactionService.getBalance(user.getId()),amount.toString());
 			model.addAttribute("projectedBalance",projectedBalance);
 			
 			return "bankorder";
@@ -170,16 +172,21 @@ public class TransactionController {
     
 	/*
 	 * Page "Bankorder", Receive or Send money from Bank
+	 * operationType = -1 means to send money to user's bank
+	 * operationType = 1 means to receive money from user's bank
 	 */
     @PostMapping(value = "/bankOperation")
     public String bankOperation(@ModelAttribute("bankorder") SendMoneyDTO sendMoneyDTO,
-    		@RequestParam Integer id,
     		@RequestParam Integer amount,
     		@RequestParam Integer operationType) {
 		log.info("POST request - endpoint /bankOperation - body = "+sendMoneyDTO);
-		sendMoneyDTO.setUserId(id);
+		
+		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userService.getUserByEmail(connectedEmail).get();
+		
+		sendMoneyDTO.setUserId(user.getId());
 		sendMoneyDTO.setAmount(amount);
-		sendMoneyDTO.setBuddyId(id);
+		sendMoneyDTO.setBuddyId(user.getId());
 		
 		switch(operationType) {
 		  case -1:

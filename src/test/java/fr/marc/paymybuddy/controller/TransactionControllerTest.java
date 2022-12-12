@@ -108,7 +108,7 @@ public class TransactionControllerTest {
 	// End point "/transfer"
     @Test
 	@WithMockUser (username = "acall@mail.fr")
-    public void testDisplayArthurTransferPage() throws Exception {
+    public void displayArthurTransferPageTest() throws Exception {
         mockMvc.perform(get("/transfer?message="))
             .andExpect(status().isOk())
             .andExpect(view().name("transfer"))
@@ -120,7 +120,7 @@ public class TransactionControllerTest {
 	// End point "/sendOperation"
     @Test
 	@WithMockUser (username = "acall@mail.fr")
-    public void sendAnOperation() throws Exception {
+    public void sendAnOperationTest() throws Exception {
         mockMvc.perform(post("/sendOperation?id=1&&amount=300&&buddyId=3")
         		.param("description", "Gift"))
             .andExpect(status().is(302))
@@ -148,7 +148,7 @@ public class TransactionControllerTest {
     // End point "/confirmation"
 	@Nested
 	@WithMockUser (username = "acall@mail.fr")
-	class displayConfirmationPageByIdTest {
+	class displayConfirmationPageTest {
 		@Test
 	    public void send_100_to_Midas() throws Exception {
 	        mockMvc.perform(post("/confirmation")
@@ -162,11 +162,107 @@ public class TransactionControllerTest {
 	    }
 	}
 	
-	//TODO : End point "/bankOrder"
+	// End point "/bankOrder"
+	@Nested
+	@WithMockUser (username = "acall@mail.fr")
+	class displayBankOrderPageTest {
+		@Test
+	    public void send_100_to_my_bank() throws Exception {
+	        mockMvc.perform(post("/bankOrder")
+	        		.param("amount", "100")
+	        		.param("operationType","-1"))
+	            .andExpect(status().isOk())
+	            .andExpect(view().name("bankorder"))
+	            .andExpect(content().string(containsString("100")))
+	            .andExpect(content().string(containsString("Send Money to my bank")));
+	    }
+		
+		@Test
+	    public void receive_100_from_my_bank() throws Exception {
+	        mockMvc.perform(post("/bankOrder")
+	        		.param("amount", "100")
+	        		.param("operationType","1"))
+	            .andExpect(status().isOk())
+	            .andExpect(view().name("bankorder"))
+	            .andExpect(content().string(containsString("100")))
+	            .andExpect(content().string(containsString("Receive Money from my bank")));
+	    }
+		
+		@Test
+	    public void invalid_operation_send_0() throws Exception {
+	        mockMvc.perform(post("/bankOrder")
+	        		.param("amount", "0")
+	        		.param("operationType","-1"))
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("redirect:/home"));
+	    }
+		
+		@Test
+	    public void invalid_operation_negativ_amount() throws Exception {
+	        mockMvc.perform(post("/bankOrder")
+	        		.param("amount", "-100")
+	        		.param("operationType","-1"))
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("redirect:/home"));
+	    }
+		
+		@Test
+	    public void invalid_operation_no_operation_selected() throws Exception {
+	        mockMvc.perform(post("/bankOrder")
+	        		.param("amount", "100")
+	        		.param("operationType","0"))
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("redirect:/home"));
+	    }
+	}
 	
-	
-	//TODO : End point "/bankOperation"
-	
-	
+	// End point "/bankOperation"
+	@Nested
+	@WithMockUser (username = "acall@mail.fr")
+	class BankOperationTest {
+		@Test
+	    public void send_100_to_my_bank() throws Exception {
+	        mockMvc.perform(post("/bankOperation?amount=100&&operationType=-1")
+	        		.param("description", "To my bank"))
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("redirect:/home"));
+	        
+	        Integer treasurerId = userRepository.findByEmail(Treasurer.EMAIL).get().getId();
+	        
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,1,"-100.00"))
+    				.isNotNull();
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,treasurerId,"-0.50"))
+					.isNotNull();
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(treasurerId,1,"0.50"))
+					.isNotNull();
+    
+		    int transactionNumber = transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,1,"-100.00").getTransactionNumber();
+		    for (int i=0; i<3;i++) {
+		    	transactionRepository.delete(transactionRepository.findFirstByTransactionNumber(transactionNumber));
+		    	}
+		}
+		
+		@Test
+	    public void receive_100_from_my_bank() throws Exception {
+	        mockMvc.perform(post("/bankOperation?amount=100&&operationType=1")
+	        		.param("description", "To my bank"))
+	            .andExpect(status().is(302))
+	            .andExpect(view().name("redirect:/home"));
+	        
+	        Integer treasurerId = userRepository.findByEmail(Treasurer.EMAIL).get().getId();
+	        
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,1,"100.00"))
+    				.isNotNull();
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,treasurerId,"-0.50"))
+					.isNotNull();
+	        assertThat(transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(treasurerId,1,"0.50"))
+					.isNotNull();
+    
+		    int transactionNumber = transactionRepository.findFirstByUserIdAndBuddyIdAndAmount(1,1,"100.00").getTransactionNumber();
+		    for (int i=0; i<3;i++) {
+		    	transactionRepository.delete(transactionRepository.findFirstByTransactionNumber(transactionNumber));
+		    	}
+		}
+	}
 
 }
