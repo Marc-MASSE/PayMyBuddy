@@ -170,7 +170,7 @@ public class UserControllerTest {
 	        		.user("acall@mail.fr")
 	        		.password("Excalibur");
 	        mockMvc.perform(requestBuilder)
-	        	.andExpect(redirectedUrl("/home"))
+	        	.andExpect(redirectedUrl("/home?message="))
 	        	.andExpect(status().isFound());
 	    }
 	    
@@ -230,12 +230,13 @@ public class UserControllerTest {
     @Test
 	@WithMockUser (username = "acall@mail.fr")
     public void testDisplayArthurHomePage() throws Exception {
-        mockMvc.perform(get("/home"))
+        mockMvc.perform(get("/home?message=Coucou"))
             .andExpect(status().isOk())
             .andExpect(view().name("home"))
             .andExpect(content().string(containsString("Welcome")))
             .andExpect(content().string(containsString("Arthur")))
-            .andExpect(content().string(containsString("450.00")));
+            .andExpect(content().string(containsString("450.00")))
+            .andExpect(content().string(containsString("Coucou")));
     }
 	
     // End point "/contact"
@@ -249,7 +250,7 @@ public class UserControllerTest {
             .andExpect(content().string(containsString("www.paymybuddy.com")));
     }
 	
-    // TODO : End point "/modify" POST
+    // End point "/modify" POST
     @Test
 	@WithMockUser (username = "acall@mail.fr")
     public void testDisplayArthurModifyPage() throws Exception {

@@ -194,7 +194,7 @@ public class TransactionControllerTest {
 	        		.param("amount", "0")
 	        		.param("operationType","-1"))
 	            .andExpect(status().is(302))
-	            .andExpect(view().name("redirect:/home"));
+	            .andExpect(view().name("redirect:/home?message=Operation and positiv amount are required."));
 	    }
 		
 		@Test
@@ -203,7 +203,7 @@ public class TransactionControllerTest {
 	        		.param("amount", "-100")
 	        		.param("operationType","-1"))
 	            .andExpect(status().is(302))
-	            .andExpect(view().name("redirect:/home"));
+	            .andExpect(view().name("redirect:/home?message=Operation and positiv amount are required."));
 	    }
 		
 		@Test
@@ -212,7 +212,7 @@ public class TransactionControllerTest {
 	        		.param("amount", "100")
 	        		.param("operationType","0"))
 	            .andExpect(status().is(302))
-	            .andExpect(view().name("redirect:/home"));
+	            .andExpect(view().name("redirect:/home?message=Operation and positiv amount are required."));
 	    }
 	}
 	
@@ -225,7 +225,7 @@ public class TransactionControllerTest {
 	        mockMvc.perform(post("/bankOperation?amount=100&&operationType=-1")
 	        		.param("description", "To my bank"))
 	            .andExpect(status().is(302))
-	            .andExpect(view().name("redirect:/home"));
+	            .andExpect(view().name("redirect:/home?message="));
 	        
 	        Integer treasurerId = userRepository.findByEmail(Treasurer.EMAIL).get().getId();
 	        
@@ -247,7 +247,7 @@ public class TransactionControllerTest {
 	        mockMvc.perform(post("/bankOperation?amount=100&&operationType=1")
 	        		.param("description", "To my bank"))
 	            .andExpect(status().is(302))
-	            .andExpect(view().name("redirect:/home"));
+	            .andExpect(view().name("redirect:/home?message="));
 	        
 	        Integer treasurerId = userRepository.findByEmail(Treasurer.EMAIL).get().getId();
 	        

@@ -26,7 +26,7 @@
 			
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1"><a th:href="@{home}">Home</a></li>
+					<li class="mx-1"><a th:href="@{home(message='')}">Home</a></li>
 					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
 					<li class="mx-1 text-primary">Profile</li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
@@ -36,7 +36,7 @@
 		</div>
 		<div class="bg-light">
 			<span class="mx-1">
-				<a th:href="@{home}">Home /</a>
+				<a th:href="@{home(message='')}">Home /</a>
 			</span>
 			<span class="mx-1">Profile</span>
 		</div>

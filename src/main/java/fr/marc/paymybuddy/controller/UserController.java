@@ -120,7 +120,7 @@ public class UserController {
 	 * Page "Home"
 	*/
 	@GetMapping("/home")
-	public String displayHomePageById(Model model) {
+	public String displayHomePageById(Model model, @RequestParam String message) {
     	
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
@@ -129,6 +129,8 @@ public class UserController {
 		log.info("Role = {}",SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 		
 		model.addAttribute("user",user);
+		
+		model.addAttribute("message",message);
 		
 		String balance = transactionService.getBalance(user.getId());
 		model.addAttribute("balance",balance);

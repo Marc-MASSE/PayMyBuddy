@@ -250,18 +250,4 @@ public class TransactionServiceImpl implements ITransactionService {
 		return projectedBalance.toString();
 	}
 	
-	/*
-	@Override
-	public SendMoneyDTO convertToSendMoney (BankOrderDTO bankOrderDTO) {
-		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
-		sendMoneyDTO = SendMoneyDTO.builder()
-				.userId(bankOrderDTO.getUserId())
-				.buddyId(bankOrderDTO.getUserId())
-				.amount(bankOrderDTO.getAmount()*bankOrderDTO.getOperationType())
-				.description("Bank Order")
-				.build();
-		return sendMoneyDTO;
-	}
-	*/
-	
 }

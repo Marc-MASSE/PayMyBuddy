@@ -60,6 +60,7 @@ public class TransactionController {
         return transactionService.getTransactionById(id);
     }
     
+	/*
 	@ResponseBody
     @PostMapping(value = "/transaction")
     public Transaction addTransaction (@RequestParam int userId, @RequestBody Transaction transaction) {
@@ -68,6 +69,7 @@ public class TransactionController {
 		transaction.setUser(user);
     	return transactionService.addTransaction(transaction);
     }
+    */
 
 	/*
 	 * Page "Transfer"
@@ -154,7 +156,8 @@ public class TransactionController {
 		
 		// buddyId=0 means no buddy selected
 		if (bankOrderDTO.getOperationType()==0 || bankOrderDTO.getAmount()<=0) {
-			return "redirect:/home";
+			String message = "Operation and positiv amount are required.";
+			return "redirect:/home?message="+message;
 		}else {
 			SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
 			model.addAttribute("sendMoneyDTO",sendMoneyDTO);
@@ -196,7 +199,7 @@ public class TransactionController {
 			  transactionService.receiveMoneyFromBank(sendMoneyDTO);
 			  break;
 		}
-		return "redirect:/home";
+		return "redirect:/home?message=";
     }
     
     
