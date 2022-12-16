@@ -19,7 +19,6 @@ CREATE TABLE user (
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   password VARCHAR(100) NOT NULL,
-  remember_me BOOLEAN DEFAULT false,
   iban VARCHAR(34),
   bank VARCHAR(100),
   role VARCHAR(15) DEFAULT 'USER'

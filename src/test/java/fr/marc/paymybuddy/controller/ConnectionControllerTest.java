@@ -58,7 +58,7 @@ public class ConnectionControllerTest {
 	
 	// End point "/connection" POST
 	@Test
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
     public void addAConnectionTest() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		Connection testConnection = Connection.builder()
@@ -153,7 +153,7 @@ public class ConnectionControllerTest {
 	
 	// End point "/connection" DELETE
 	@Test
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
     public void deleteAConnectionTest() throws Exception {
 		Connection testConnection = Connection.builder()
 				.buddyId(5)

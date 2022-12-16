@@ -61,17 +61,6 @@ public class TransactionController {
     }
     
 	/*
-	@ResponseBody
-    @PostMapping(value = "/transaction")
-    public Transaction addTransaction (@RequestParam int userId, @RequestBody Transaction transaction) {
-		log.info("POST request - endpoint /transaction - body = "+transaction);
-		User user = userService.getUserById(userId).get();
-		transaction.setUser(user);
-    	return transactionService.addTransaction(transaction);
-    }
-    */
-
-	/*
 	 * Page "Transfer"
 	 * Display buddies list, gifts to buddy list
 	 * and a form to send money to a buddy

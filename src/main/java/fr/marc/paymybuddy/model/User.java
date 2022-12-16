@@ -42,9 +42,6 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
-	@Column(name = "remember_me")
-	private boolean rememberMe;
-
 	@Column(name = "iban")
 	private String iban;
 

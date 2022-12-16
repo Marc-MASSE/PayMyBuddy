@@ -26,6 +26,7 @@ public interface ITransactionService {
 	public List<Transaction> getActivity(Integer id);
 	
 	public List<ActivityDTO> getActivityById(Integer id);
+	//public List<ActivityDTO> getActivityById(Integer id, Integer page);
 	
 	public List<ActivityDTO> getTransactionsById(Integer id);
 	
@@ -38,7 +39,5 @@ public interface ITransactionService {
 	int getNextTransactionNumber();
 
 	String getProjectedBalance(String balance, String amount);
-
-	//SendMoneyDTO convertToSendMoney(BankOrderDTO bankOrderDTO);
 
 }

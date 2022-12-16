@@ -60,7 +60,6 @@ public class ConnectionServiceImplTest {
 				.firstName("Prénom1")
 				.lastName("Nom1")
 				.password("111")
-				.rememberMe(false)
 				.iban("FR001")
 				.bank("Banque1")
 				.build();
@@ -70,7 +69,6 @@ public class ConnectionServiceImplTest {
 				.firstName("Prénom2")
 				.lastName("Nom2")
 				.password("222")
-				.rememberMe(false)
 				.iban("FR002")
 				.bank("Banque2")
 				.build();
@@ -80,7 +78,6 @@ public class ConnectionServiceImplTest {
 				.firstName("Prénom3")
 				.lastName("Nom3")
 				.password("333")
-				.rememberMe(false)
 				.iban("FR003")
 				.bank("Banque3")
 				.build();
@@ -197,7 +194,5 @@ public class ConnectionServiceImplTest {
 		assertThat(idCaptor.getValue()).isEqualTo(1);
 		verify(connectionRepository).deleteById(1);
 	}
-	
-	// TODO : newBuddyAvailabilityMessage
 	
 }

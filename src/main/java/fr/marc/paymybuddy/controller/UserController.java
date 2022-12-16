@@ -120,7 +120,9 @@ public class UserController {
 	 * Page "Home"
 	*/
 	@GetMapping("/home")
-	public String displayHomePageById(Model model, @RequestParam String message) {
+	public String displayHomePageById(Model model, 
+			@RequestParam String message, 
+			@RequestParam(name="page", defaultValue="1") int page) {
     	
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
@@ -136,7 +138,18 @@ public class UserController {
 		model.addAttribute("balance",balance);
 		
 		List<ActivityDTO> activities = transactionService.getActivityById(user.getId());
-		model.addAttribute("activities",activities);
+		int linesNumber = 3;
+		int start = (page-1)*linesNumber;
+		int end = Math.min(page*linesNumber,activities.size());
+		model.addAttribute("activities",activities.subList(start,end));
+		
+		int pagesNumber = (int) (Math.ceil(((float)activities.size()/(float)linesNumber)));
+		int[] pages = new int[pagesNumber];
+		for(int i=0;i<pagesNumber;i++) pages[i]=i+1;
+		model.addAttribute("pages",pages);
+		
+		model.addAttribute("currentPage",page);
+		model.addAttribute("maxPage",pagesNumber);
 		
 		BankOrderDTO bankOrderDTO = new BankOrderDTO();
 		model.addAttribute("bankOrderDTO",bankOrderDTO);
@@ -177,9 +190,11 @@ public class UserController {
     @PostMapping(value = "/saveUser")
     public String saveUser(@ModelAttribute("modify") User user) {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-    	user.setId(userService.getUserByEmail(connectedEmail).get().getId());
+		User userConnected = userService.getUserByEmail(connectedEmail).get();
+    	user.setId(userConnected.getId());
     	user.setEmail(connectedEmail);
-    	user.setPassword(userService.getUserByEmail(connectedEmail).get().getEmail());
+    	user.setPassword(userConnected.getPassword());
+    	user.setRole(userConnected.getRole());
 		log.info("POST request - endpoint /saveUser - body = {}",user);
 		userService.addUser(user);
     	return "redirect:/profile";

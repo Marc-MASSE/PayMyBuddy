@@ -10,6 +10,9 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
@@ -160,6 +163,12 @@ public class TransactionServiceImpl implements ITransactionService {
 			activityDTO.setAmount(a.getAmount());
 			activitiesDTO.add(activityDTO);
 		});
+		//Page<ActivityDTO> activitiesPage = activitiesDTO(new PageRequest(0,5));
+		//int lineNumber = 5;
+		//int start = (page-1)*lineNumber;
+		//int end = Math.min(page*lineNumber,activitiesDTO.size());
+		//System.out.println("Page "+page+" : " + activitiesDTO.subList(start,end));
+		
 		return activitiesDTO;
 	}
 	

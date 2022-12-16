@@ -119,7 +119,7 @@ public class UserControllerTest {
 	
 	// End point "/user"
 	@Nested
-	@WithMockUser (roles="ADMIN")
+	@WithMockUser (authorities="ADMIN")
 	class GetUserById {
 		@Test
 	    public void success() throws Exception {
@@ -264,7 +264,7 @@ public class UserControllerTest {
     
     // End point "/user" POST
     @Test
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
     public void testAddAUser() throws Exception {
 		ObjectMapper mapper = new ObjectMapper(); 
 		testUser = User.builder()
@@ -272,7 +272,6 @@ public class UserControllerTest {
 			.firstName("Prénom1")
 			.lastName("Nom1")
 			.password("111")
-			.rememberMe(false)
 			.iban("FR001")
 			.bank("Banque1")
 			.build();
@@ -295,7 +294,6 @@ public class UserControllerTest {
 			.firstName("Prénom2")
 			.lastName("Nom2")
 			.password("222")
-			.rememberMe(false)
 			.iban("FR002")
 			.bank("Banque2")
 			.role("USER")
@@ -324,15 +322,13 @@ public class UserControllerTest {
 	
     // End point "/user" DELETE
     @Test
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
     public void testDeleteAUser() throws Exception {
-		ObjectMapper mapper = new ObjectMapper(); 
 		testUser = User.builder()
 			.email("user3@mail.fr")
 			.firstName("Prénom3")
 			.lastName("Nom3")
 			.password("333")
-			.rememberMe(false)
 			.iban("FR003")
 			.bank("Banque3")
 			.build();

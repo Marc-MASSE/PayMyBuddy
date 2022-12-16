@@ -72,7 +72,7 @@ public class TransactionControllerTest {
 	
 	// End point "/transactions"
 	@Test
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
     public void getTransactions() throws Exception {
         mockMvc.perform(get("/transactions"))
             .andExpect(status().isOk())
@@ -86,7 +86,7 @@ public class TransactionControllerTest {
 	
 	// End point "/transaction"
 	@Nested
-	@WithMockUser
+	@WithMockUser (authorities="ADMIN")
 	class GetTransactionById {
 		@Test
 	    public void success() throws Exception {

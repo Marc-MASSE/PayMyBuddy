@@ -71,7 +71,6 @@ public class TransactionServiceImplTest {
 				.firstName("Prénom1")
 				.lastName("Nom1")
 				.password("111")
-				.rememberMe(false)
 				.iban("FR001")
 				.bank("Banque1")
 				.build();
@@ -81,7 +80,6 @@ public class TransactionServiceImplTest {
 				.firstName("Prénom2")
 				.lastName("Nom2")
 				.password("222")
-				.rememberMe(false)
 				.iban("FR002")
 				.bank("Banque2")
 				.build();
@@ -200,7 +198,6 @@ public class TransactionServiceImplTest {
 					.firstName("")
 					.lastName("")
 					.password("admin123")
-					.rememberMe(false)
 					.iban("FR001")
 					.bank("Banque1")
 					.build();
@@ -283,7 +280,6 @@ public class TransactionServiceImplTest {
 					.firstName("")
 					.lastName("")
 					.password("admin123")
-					.rememberMe(false)
 					.iban("FR001")
 					.bank("Banque1")
 					.build();
@@ -364,7 +360,6 @@ public class TransactionServiceImplTest {
 					.firstName("")
 					.lastName("")
 					.password("admin123")
-					.rememberMe(false)
 					.iban("FR001")
 					.bank("Banque1")
 					.build();
