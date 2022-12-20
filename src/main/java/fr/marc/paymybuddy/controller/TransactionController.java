@@ -66,7 +66,9 @@ public class TransactionController {
 	 * and a form to send money to a buddy
 	 */
     @GetMapping("/transfer")
-    public String displayTransferPageById(Model model, @RequestParam String message) {
+    public String displayTransferPageById(Model model, 
+    		@RequestParam String message,
+    		@RequestParam(name="page", defaultValue="1") int page) {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
     	log.info("GET request - endpoint /transfer - email = "+connectedEmail);
@@ -78,8 +80,19 @@ public class TransactionController {
 		log.info("Buddy list = "+buddyList);
 		
 		List<ActivityDTO> transactions = transactionService.getTransactionsById(user.getId());
-		model.addAttribute("transactions",transactions);
+		int linesNumber = 3;
+		int start = (page-1)*linesNumber;
+		int end = Math.min(page*linesNumber,transactions.size());
+		model.addAttribute("transactions",transactions.subList(start,end));
 		log.info("Transactions list = "+transactions);
+		
+		int pagesNumber = (int) (Math.ceil(((float)transactions.size()/(float)linesNumber)));
+		int[] pages = new int[pagesNumber];
+		for(int i=0;i<pagesNumber;i++) pages[i]=i+1;
+		model.addAttribute("pages",pages);
+		
+		model.addAttribute("currentPage",page);
+		model.addAttribute("maxPage",pagesNumber);
 		
 		SendMoneyDTO sendMoneyDTO = new SendMoneyDTO();
 		model.addAttribute("sendMoneyDTO",sendMoneyDTO);

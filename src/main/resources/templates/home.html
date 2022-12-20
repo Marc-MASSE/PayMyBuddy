@@ -113,6 +113,8 @@
 				</tbody>
 			</table>
 		</div>
+		
+		<!-- Page navigation -->
 		<div class="row col-md-8 col-xs-12 mx-auto mb-4">
 			<div class="col align-self-center">
 				<ul class="nav nav justify-content-center">
@@ -123,7 +125,7 @@
 					</li>
 					<li th:each="p:${pages}">
 						<a th:if="${p}==${currentPage}" 
-							class="text-info border border-secondary fs-5 px-3 py-2" 
+							class="text-white bg-primary border border-secondary fs-5 px-3 py-2" 
 							th:text="${p}" 
 							th:href="@{home(message='',page=${p})}">
 						</a>
