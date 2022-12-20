@@ -49,7 +49,8 @@ public class ConnectionController {
 	 * To add a new buddy or delete a buddy
 	 */
     @GetMapping("/buddies")
-    public String displayBuddiesPageById(Model model, @RequestParam String message) {
+    public String displayBuddiesPageById(Model model, 
+    		@RequestParam (name="message", defaultValue="") String message) {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();
 		log.info("GET request - endpoint /buddies - email = "+connectedEmail);

@@ -32,7 +32,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.formLogin()
 					.loginPage("/login")
-					.defaultSuccessUrl("/home?message=",true) // true must be added for the redirect to work.
+					.defaultSuccessUrl("/home",true) // true must be added for the redirect to work.
 					.permitAll()
 				.and()
 				.logout()

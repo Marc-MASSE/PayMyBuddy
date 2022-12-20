@@ -67,7 +67,7 @@ public class TransactionController {
 	 */
     @GetMapping("/transfer")
     public String displayTransferPageById(Model model, 
-    		@RequestParam String message,
+    		@RequestParam (name="message", defaultValue="") String message,
     		@RequestParam(name="page", defaultValue="1") int page) {
 		String connectedEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		User user = userService.getUserByEmail(connectedEmail).get();

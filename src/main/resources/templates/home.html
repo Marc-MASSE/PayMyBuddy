@@ -27,7 +27,7 @@
 			<div class="col-9">
 				<ul class="nav justify-content-end">
 					<li class="mx-1 text-primary">Home</li>
-					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
 					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
 					<li class="mx-1"><a th:href="@{logout}">Log off</a></li>
@@ -120,24 +120,24 @@
 				<ul class="nav nav justify-content-center">
 					<li th:if="${currentPage}>1">
 						<a class="text-primary border border-secondary fs-5 px-3 py-2" 
-							th:href="@{home(message='',page=${currentPage-1})}">&#10218;
+							th:href="@{home(page=${currentPage-1})}">&#10218;
 						</a>
 					</li>
 					<li th:each="p:${pages}">
 						<a th:if="${p}==${currentPage}" 
 							class="text-white bg-primary border border-secondary fs-5 px-3 py-2" 
 							th:text="${p}" 
-							th:href="@{home(message='',page=${p})}">
+							th:href="@{home(page=${p})}">
 						</a>
 						<a th:if="${p}!=${currentPage}" 
 							class="text-primary border border-secondary fs-5 px-3 py-2" 
 							th:text="${p}" 
-							th:href="@{home(message='',page=${p})}">
+							th:href="@{home(page=${p})}">
 						</a>
 					</li>
 					<li th:if="${currentPage}<${maxPage}">
 						<a class="text-primary border border-secondary fs-5 px-3 py-2" 
-							th:href="@{home(message='',page=${currentPage+1})}">&#10219;
+							th:href="@{home(page=${currentPage+1})}">&#10219;
 						</a>
 					</li>
 				</ul>

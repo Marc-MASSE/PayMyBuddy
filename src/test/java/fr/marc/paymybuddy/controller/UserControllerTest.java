@@ -170,7 +170,7 @@ public class UserControllerTest {
 	        		.user("acall@mail.fr")
 	        		.password("Excalibur");
 	        mockMvc.perform(requestBuilder)
-	        	.andExpect(redirectedUrl("/home?message="))
+	        	.andExpect(redirectedUrl("/home"))
 	        	.andExpect(status().isFound());
 	    }
 	    

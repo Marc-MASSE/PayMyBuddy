@@ -26,8 +26,8 @@
 			
 			<div class="col-9">
 				<ul class="nav justify-content-end">
-					<li class="mx-1"><a th:href="@{home(message='')}">Home</a></li>
-					<li class="mx-1"><a th:href="@{transfer(message='')}">Transfer</a></li>
+					<li class="mx-1"><a th:href="@{home}">Home</a></li>
+					<li class="mx-1"><a th:href="@{transfer}">Transfer</a></li>
 					<li class="mx-1"><a th:href="@{account}">Account</a></li>
 					<li class="mx-1"><a th:href="@{profile}">Profile</a></li>
 					<li class="mx-1"><a th:href="@{contact}">Contact</a></li>
@@ -37,7 +37,7 @@
 		</div>
 		<div class="bg-light">
 			<span class="mx-1">
-				<a th:href="@{home(message='')}">Home /</a>
+				<a th:href="@{home}">Home /</a>
 			</span>
 			<span class="mx-1">
 				<a th:href="@{profile}">Profile /</a>
@@ -66,25 +66,6 @@
 						</tr>
 					</tbody>
 				</table>
-				<!-- Login details --
-				<table class="table">
-					<thead>
-						<tr class="green_context">
-							<th colspan="2">Login details</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Email :</td>
-							<td><input th:field="*{email}"></td>
-						</tr>
-						<tr>
-							<td>Password :</td>
-							<td><input th:field="*{password}"></td>
-						</tr>
-					</tbody>
-				</table >
-				-->
 				<!-- Bank -->
 				<table class="table">
 					<thead>
