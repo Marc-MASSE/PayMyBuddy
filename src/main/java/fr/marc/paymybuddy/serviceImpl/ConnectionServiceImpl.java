@@ -80,7 +80,7 @@ public class ConnectionServiceImpl implements IConnectionService {
 
 	@Override
 	public String newBuddyAvailabilityMessage(String buddyEmail, String userEmail) {
-		// TODO Auto-generated method stub
+		
 		message = "";
 		if (userRepository.findByEmail(buddyEmail).isEmpty()) {
 			message = "This buddy isn't registered.";
