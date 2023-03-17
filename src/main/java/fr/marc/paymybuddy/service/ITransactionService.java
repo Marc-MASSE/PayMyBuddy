@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import fr.marc.paymybuddy.DTO.ActivityDTO;
-import fr.marc.paymybuddy.DTO.BankOrderDTO;
 import fr.marc.paymybuddy.DTO.SendMoneyDTO;
 import fr.marc.paymybuddy.model.Transaction;
 

@@ -1,9 +1,7 @@
 package fr.marc.paymybuddy.serviceImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,18 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import fr.marc.paymybuddy.DTO.ActivityDTO;
-import fr.marc.paymybuddy.DTO.BuddyDTO;
 import fr.marc.paymybuddy.DTO.LoginDTO;
-import fr.marc.paymybuddy.model.Connection;
-import fr.marc.paymybuddy.model.Transaction;
 import fr.marc.paymybuddy.model.User;
-import fr.marc.paymybuddy.repository.ConnectionRepository;
-import fr.marc.paymybuddy.repository.TransactionRepository;
 import fr.marc.paymybuddy.repository.UserRepository;
 import fr.marc.paymybuddy.service.IUserService;
 

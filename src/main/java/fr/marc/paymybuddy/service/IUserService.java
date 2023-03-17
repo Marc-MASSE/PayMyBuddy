@@ -1,16 +1,13 @@
 package fr.marc.paymybuddy.service;
 
-import java.util.Collection;
 import java.util.Optional;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import fr.marc.paymybuddy.DTO.LoginDTO;
 import fr.marc.paymybuddy.model.User;
 
-//
+
 public interface IUserService extends UserDetailsService{
 	
 	Iterable<User> getUsers();

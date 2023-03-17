@@ -42,3 +42,26 @@ Passwords encrypted by Bcrypt.
 
 https://bcrypt-generator.com/
 
+### Using the API
+
+Administrator
+- ✉ Email : admin@mail.fr
+- ✱ Password : user123
+
+Users
+
+- ✉ Email : mking@mail.fr
+- ✱ Password : Gold
+
+- ✉ Email : acall@mail.fr
+- ✱ Password : Excalibur
+
+- ✉ Email : jpoor@mail.fr
+- ✱ Password : Nothing
+
+- ✉ Email : bpicsou@mail.fr
+- ✱ Password : Money
+
+
+
+
